@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/model/user_model.dart';
 import 'package:ppsgasproject/screen/main_shop.dart';
@@ -112,7 +111,7 @@ class _SignInState extends State<SignIn> {
       );
 
     Future<Null> checkAuthen()async{
-      String url = 'http://192.168.31.104:8080/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
+      String url = 'http://192.168.31.102:8080/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
       try{
         Response response = await Dio().get(url);
         print('res = $response');

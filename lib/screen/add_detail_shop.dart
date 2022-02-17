@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
 class AddDetailShop extends StatefulWidget {
@@ -9,6 +10,33 @@ class AddDetailShop extends StatefulWidget {
 }
 
 class _AddDetailShopState extends State<AddDetailShop> {
+  //Field
+  double lat, lng;
+
+  @override
+  void initState() {
+    super.initState();
+    findLatLng();
+  }
+
+  Future<Null> findLatLng() async {
+    LocationData locationData = await findLocationData();
+    setState(() {
+      lat = locationData.latitude;
+      lng = locationData.longitude;
+    });
+    print('lat = $lat, lng = $lng');
+  }
+
+  Future<LocationData> findLocationData() async {
+    Location location = Location();
+    try {
+      return location.getLocation();
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +55,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
             MyStyle().mySizebox(),
             groupImage(),
             MyStyle().mySizebox(),
-            showMap(),
+            lat == null ? MyStyle().showProgress() : showMap(),
             MyStyle().mySizebox(),
             saveButton(),
           ],
@@ -38,8 +66,8 @@ class _AddDetailShopState extends State<AddDetailShop> {
 
   Widget saveButton() {
     return Container(
-      // width: MediaQuery.of(context).size.width,
-      width: 100.0,
+      width: MediaQuery.of(context).size.width,
+      // width: 100.0,
       child: RaisedButton.icon(
         color: MyStyle().primaryColor,
         onPressed: () {},
@@ -55,8 +83,21 @@ class _AddDetailShopState extends State<AddDetailShop> {
     );
   }
 
+  Set<Marker> myMarker() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('PPS Shop'),
+        position: LatLng(lat, lng),
+        infoWindow: InfoWindow(
+          title: 'ร้านPPSแก๊ส อยู่ที่นี่',
+          snippet: 'ละติจูด = $lat , ลองติจูด = $lng',
+        ),
+      )
+    ].toSet();
+  }
+
   Container showMap() {
-    LatLng latLng = LatLng(7.036777083271106, 100.46753637917304);
+    LatLng latLng = LatLng(lat, lng);
     CameraPosition cameraPosition = CameraPosition(
       target: latLng,
       zoom: 16.0,
@@ -68,6 +109,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
         initialCameraPosition: cameraPosition,
         mapType: MapType.normal,
         onMapCreated: (controller) {},
+        markers: myMarker(),
       ),
     );
   }
