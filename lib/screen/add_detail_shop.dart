@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
 class AddDetailShop extends StatefulWidget {
@@ -86,6 +89,8 @@ class _AddDetailShopState extends State<AddDetailShop> {
             normalDialog(context, 'กรุณากรอกทุกช่อง');
           } else if (file == null) {
             normalDialog(context, 'กรุณาเลือกรูปภาพ');
+          } else {
+            uploadImage();
           }
         },
         icon: Icon(
@@ -98,6 +103,25 @@ class _AddDetailShopState extends State<AddDetailShop> {
         ),
       ),
     );
+  }
+
+  Future<Null> uploadImage() async {
+    Random random = Random();
+    int i = random.nextInt(1000000);
+    String nameImage = 'shop$i.jpg';
+
+    String url = '${MyConstant().domain}/gasorderuser/Saveshop.php';
+
+    try {
+      Map<String, dynamic> map = Map();
+      map['file'] =
+          await MultipartFile.fromFile(file.path, filename: nameImage);
+
+      FormData formData = FormData.fromMap(map);
+      await Dio().post(url, data: formData).then((value) {
+        print('Response =>> $value');
+      });
+    } catch (e) {}
   }
 
   Set<Marker> myMarker() {
