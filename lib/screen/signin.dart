@@ -111,7 +111,7 @@ class _SignInState extends State<SignIn> {
       );
 
     Future<Null> checkAuthen()async{
-      String url = 'http://192.168.31.102:8080/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
+      String url = 'http://192.168.31.103:8080/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
       try{
         Response response = await Dio().get(url);
         print('res = $response');

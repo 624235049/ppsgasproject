@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(theme: ThemeData(primarySwatch: Colors.red),
-      title: 'PPT Gas',
+      title: 'PPS Gas',
       home: HomePage(),
     );
   }

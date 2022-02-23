@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
@@ -11,7 +14,8 @@ class AddDetailShop extends StatefulWidget {
 
 class _AddDetailShopState extends State<AddDetailShop> {
   //Field
-  double lat, lng;
+  double lat = 7.03653660428109, lng = 100.46865206267121;
+  File file;
 
   @override
   void initState() {
@@ -87,7 +91,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
     return <Marker>[
       Marker(
         markerId: MarkerId('PPS Shop'),
-        position: LatLng(lat, lng),
+        position: LatLng(lat = 7.03653660428109, lng = 100.46865206267121),
         infoWindow: InfoWindow(
           title: 'ร้านPPSแก๊ส อยู่ที่นี่',
           snippet: 'ละติจูด = $lat , ลองติจูด = $lng',
@@ -123,7 +127,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
             Icons.add_a_photo,
             size: 36.0,
           ),
-          onPressed: () {},
+          onPressed: () => chooseImage(ImageSource.camera),
         ),
         Container(
           width: 250.0,
@@ -134,10 +138,26 @@ class _AddDetailShopState extends State<AddDetailShop> {
             Icons.add_photo_alternate,
             size: 36.0,
           ),
-          onPressed: () {},
+          onPressed: () => chooseImage(ImageSource.gallery),
         ),
       ],
     );
+  }
+
+  Future<Null> chooseImage(ImageSource imageSource) async {
+    try {
+      var object = await ImagePicker(
+          // source: imageSource,
+          // maxHeight: 800.0,
+          // maxWidth: 800.0,
+
+          );
+      PickedFile pickedFile = await object.getImage(
+          source: imageSource, maxHeight: 800.0, maxWidth: 800.0);
+      setState(() {
+        file = File(pickedFile.path);
+      });
+    } catch (e) {}
   }
 
   Widget nameForm() => Row(
