@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
+import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
 class AddDetailShop extends StatefulWidget {
@@ -16,6 +17,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
   //Field
   double lat = 7.03653660428109, lng = 100.46865206267121;
   File file;
+  String nameShop, address, phone;
 
   @override
   void initState() {
@@ -74,7 +76,18 @@ class _AddDetailShopState extends State<AddDetailShop> {
       // width: 100.0,
       child: RaisedButton.icon(
         color: MyStyle().primaryColor,
-        onPressed: () {},
+        onPressed: () {
+          if (nameShop == null ||
+              nameShop.isEmpty ||
+              address == null ||
+              address.isEmpty ||
+              phone == null ||
+              phone.isEmpty) {
+            normalDialog(context, 'กรุณากรอกทุกช่อง');
+          } else if (file == null) {
+            normalDialog(context, 'กรุณาเลือกรูปภาพ');
+          }
+        },
         icon: Icon(
           Icons.save,
           color: Colors.white,
@@ -131,7 +144,9 @@ class _AddDetailShopState extends State<AddDetailShop> {
         ),
         Container(
           width: 250.0,
-          child: Image.asset('assets/images/imageIcons.jpg'),
+          child: file == null
+              ? Image.asset('assets/images/imageIcons.jpg')
+              : Image.file(file),
         ),
         IconButton(
           icon: Icon(
@@ -146,12 +161,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
 
   Future<Null> chooseImage(ImageSource imageSource) async {
     try {
-      var object = await ImagePicker(
-          // source: imageSource,
-          // maxHeight: 800.0,
-          // maxWidth: 800.0,
-
-          );
+      var object = await ImagePicker();
       PickedFile pickedFile = await object.getImage(
           source: imageSource, maxHeight: 800.0, maxWidth: 800.0);
       setState(() {
@@ -166,6 +176,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
           Container(
             width: 250.0,
             child: TextField(
+              onChanged: (value) => nameShop = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ชื่อร้าน :',
                 prefixIcon: Icon(Icons.account_box),
@@ -181,6 +192,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
           Container(
             width: 250.0,
             child: TextField(
+              onChanged: (value) => address = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ที่อยู่ร้าน :',
                 prefixIcon: Icon(Icons.location_city),
@@ -196,6 +208,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
           Container(
             width: 250.0,
             child: TextField(
+              onChanged: (value) => phone = value.trim(),
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: 'เบอร์โทรศัพท์ฺ :',
