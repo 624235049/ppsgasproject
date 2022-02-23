@@ -20,7 +20,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
   //Field
   double lat = 7.03653660428109, lng = 100.46865206267121;
   File file;
-  String nameShop, address, phone;
+  String nameShop, address, phone, urlImage;
 
   @override
   void initState() {
@@ -120,6 +120,8 @@ class _AddDetailShopState extends State<AddDetailShop> {
       FormData formData = FormData.fromMap(map);
       await Dio().post(url, data: formData).then((value) {
         print('Response =>> $value');
+        urlImage = '${MyConstant().domain}/gasorderuser/Shop/$nameImage';
+        print('urlImage = $urlImage');
       });
     } catch (e) {}
   }
