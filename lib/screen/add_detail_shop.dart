@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +9,10 @@ import 'package:location/location.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:ppsgasproject/widget/detail_shop.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ppsgasproject/model/detailshop_model.dart';
+import 'package:ppsgasproject/screen/signin.dart';
 
 class AddDetailShop extends StatefulWidget {
   @override
@@ -122,8 +125,32 @@ class _AddDetailShopState extends State<AddDetailShop> {
         print('Response =>> $value');
         urlImage = '${MyConstant().domain}/gasorderuser/Shop/$nameImage';
         print('urlImage = $urlImage');
+        editShop();
       });
     } catch (e) {}
+  }
+
+  // preferences.setString('id', detailShop.id);
+  Future<Null> editShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id');
+    String url =
+        'http://192.168.31.104:8080/gasorderuser/editdetailshop.php?isAdd=true&id=2&NameShop=$nameShop&Address=$address&UrlPicture=$urlImage&Lat=$lat&Lng=$lng';
+    try {
+      Response response = await Dio().get(url);
+      print('res = $response');
+
+      if (response.toString() == 'true') {
+        Navigator.pop(context);
+      } else {
+        normalDialog(context, 'ไม่สามารถบันทึกข้อมูลได้กรุณาลองใหม่');
+      }
+    } catch (e) {}
+  }
+
+  Future<Null> detailModel(DetailShop detailShop) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('id', detailShop.id);
   }
 
   Set<Marker> myMarker() {

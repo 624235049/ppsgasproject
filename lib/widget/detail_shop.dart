@@ -3,6 +3,8 @@ import 'package:ppsgasproject/screen/add_detail_shop.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
 class DetailShop extends StatefulWidget {
+  String get id => null;
+
   @override
   _DetailShopState createState() => _DetailShopState();
 }

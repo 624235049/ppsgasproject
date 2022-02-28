@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
 class SignUp extends StatefulWidget {
@@ -57,9 +61,9 @@ class _SignUpState extends State<SignUp> {
                 password.isEmpty) {
               print('Have space');
               normalDialog(context, 'มีช่องว่าง กรุณากรอกให้ครบครับ');
-            }else if(chooseType == null){
+            } else if (chooseType == null) {
               normalDialog(context, 'โปรดเลือกชนิดของผู้สมัคร');
-            }else {
+            } else {
               checkUser();
             }
           },
@@ -70,39 +74,34 @@ class _SignUpState extends State<SignUp> {
         ),
       );
 
-      Future<Null> checkUser()async{
-        String url = 'http://192.168.31.104:8080/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
-        try{
-          Response response = await Dio().get(url);
-          if(response.toString() == 'null'){
-            registerThread();
-          }else{
-            normalDialog(context, 'User นี้ $user มีคนใช้แล้วกรุณาเปลี่ยน User ใหม่ค่ะ!');
-          }
-        }catch (e){
-
-        }
-
+  Future<Null> checkUser() async {
+    String url =
+        '${MyConstant().domain}/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
+    try {
+      Response response = await Dio().get(url);
+      if (response.toString() == 'null') {
+        registerThread();
+      } else {
+        normalDialog(
+            context, 'User นี้ $user มีคนใช้แล้วกรุณาเปลี่ยน User ใหม่');
       }
+    } catch (e) {}
+  }
 
+  Future<Null> registerThread() async {
+    String url =
+        '${MyConstant().domain}/gasorderuser/adduser.php?isAdd=true&Name=$name&User=$user&Password=$password&ChooseType=$chooseType';
+    try {
+      Response response = await Dio().get(url);
+      print('res = $response');
 
-
-      Future<Null> registerThread()async{
-        String url = 'http://192.168.31.104:8080/gasorderuser/adduser.php?isAdd=true&Name=$name&User=$user&Password=$password&ChooseType=$chooseType';
-        try{
-          Response response = await Dio().get(url);
-          print('res = $response');
-
-          if (response.toString() == 'true'){
-            Navigator.pop(context);
-          }else{
-            normalDialog(context, 'ไม่สามารถสมัครได้ กรุณาลองใหม่ ค่ะ');
-          }
-        }catch (e){
-
-        }
+      if (response.toString() == 'true') {
+        Navigator.pop(context);
+      } else {
+        normalDialog(context, 'ไม่สามารถสมัครได้ กรุณาลองใหม่ ค่ะ');
       }
-
+    } catch (e) {}
+  }
 
   Widget userRadio() => Row(
         mainAxisAlignment: MainAxisAlignment.end,

@@ -7,10 +7,10 @@ class UserModel {
 
   UserModel(
       {String id,
-        String chooseType,
-        String name,
-        String user,
-        String password}) {
+      String chooseType,
+      String name,
+      String user,
+      String password}) {
     if (id != null) {
       this._id = id;
     }
