@@ -22,7 +22,7 @@ class AddDetailShop extends StatefulWidget {
 class _AddDetailShopState extends State<AddDetailShop> {
   @override
   void initState() {
-    super.initState();
+    super.initState(); 
     readDataShop();
     findLatLng();
   }
