@@ -20,16 +20,27 @@ class AddDetailShop extends StatefulWidget {
 }
 
 class _AddDetailShopState extends State<AddDetailShop> {
+  @override
+  void initState() {
+    super.initState();
+    readDataShop();
+    findLatLng();
+  }
+
+  Future<Null> readDataShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id');
+    String url =
+        '${MyConstant().domain}/gasorderuser/getdetailShop.php?isAdd=true&id=2';
+    await Dio().get(url).then(
+          (value) => {print('value = $value')},
+        );
+  }
+
   //Field
   double lat = 7.03653660428109, lng = 100.46865206267121;
   File file;
   String nameShop, address, phone, urlImage;
-
-  @override
-  void initState() {
-    super.initState();
-    findLatLng();
-  }
 
   Future<Null> findLatLng() async {
     LocationData locationData = await findLocationData();
@@ -123,19 +134,18 @@ class _AddDetailShopState extends State<AddDetailShop> {
       FormData formData = FormData.fromMap(map);
       await Dio().post(url, data: formData).then((value) {
         print('Response =>> $value');
-        urlImage = '${MyConstant().domain}/gasorderuser/Shop/$nameImage';
+        urlImage = '/gasorderuser/Shop/$nameImage';
         print('urlImage = $urlImage');
         editShop();
       });
     } catch (e) {}
   }
 
-  // preferences.setString('id', detailShop.id);
   Future<Null> editShop() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String id = preferences.getString('id');
     String url =
-        'http://192.168.31.104:8080/gasorderuser/editdetailshop.php?isAdd=true&id=2&NameShop=$nameShop&Address=$address&UrlPicture=$urlImage&Lat=$lat&Lng=$lng';
+        '${MyConstant().domain}/gasorderuser/editdetailshop.php?isAdd=true&id=2&NameShop=$nameShop&Address=$address&UrlPicture=$urlImage&Lat=$lat&Lng=$lng';
     try {
       Response response = await Dio().get(url);
       print('res = $response');
@@ -146,11 +156,6 @@ class _AddDetailShopState extends State<AddDetailShop> {
         normalDialog(context, 'ไม่สามารถบันทึกข้อมูลได้กรุณาลองใหม่');
       }
     } catch (e) {}
-  }
-
-  Future<Null> detailModel(DetailShop detailShop) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString('id', detailShop.id);
   }
 
   Set<Marker> myMarker() {

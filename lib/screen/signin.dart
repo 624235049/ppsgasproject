@@ -7,6 +7,7 @@ import 'package:ppsgasproject/screen/main_shop.dart';
 import 'package:ppsgasproject/screen/main_user.dart';
 import 'package:ppsgasproject/screen/man_emp.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/widget/detail_shop.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,7 +110,7 @@ class _SignInState extends State<SignIn> {
 
   Future<Null> checkAuthen() async {
     String url =
-        'http://192.168.31.104:8080/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
+        '${MyConstant().domain}/gasorderuser/getUserWhereUser.php?isAdd=true&User=$user';
     try {
       Response response = await Dio().get(url);
       print('res = $response');
@@ -135,8 +136,6 @@ class _SignInState extends State<SignIn> {
       }
     } catch (e) {}
   }
-
- 
 
   Future<Null> RoutetoService(Widget myWidget, UserModel userModel) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
