@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/screen/add_detail_shop.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
@@ -58,9 +59,62 @@ class _DetailShopState extends State<DetailShop> {
             ? MyStyle().showProgress()
             : detailShopModel.nameShop.isEmpty
                 ? showNoData(context)
-                : Text('Have Data'),
+                : showList(),
         addEditButton(),
       ],
+    );
+  }
+
+  Widget showList() => Column(
+        children: <Widget>[
+          MyStyle().showTitleH2('รายละเอียดร้าน ${detailShopModel.nameShop}'),
+          Row(
+            children: [
+              MyStyle().showTitleH2('ที่อยู่ของร้าน'),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Text(detailShopModel.address),
+            ],
+          ),
+          shopMap(),
+        ],
+      );
+
+  Set<Marker> shopMarker() {
+    return <Marker>[
+      Marker(
+          markerId: MarkerId(
+            'shopID',
+          ),
+          position: LatLng(
+            double.parse(detailShopModel.lat),
+            double.parse(detailShopModel.lng),
+          ),
+          infoWindow: InfoWindow(
+              title: 'ตำแหน่งร้าน',
+              snippet:
+                  'ละติจูด  = ${detailShopModel.lat} , ลองติจูด = ${detailShopModel.lng}'))
+    ].toSet();
+  }
+
+  Widget shopMap() {
+    double lat = double.parse(detailShopModel.lat);
+    double lng = double.parse(detailShopModel.lng);
+
+    LatLng latLng = LatLng(lat, lng);
+    CameraPosition position = CameraPosition(target: latLng, zoom: 16.0);
+
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      height: 300.0,
+      child: GoogleMap(
+        initialCameraPosition: position,
+        mapType: MapType.normal,
+        onMapCreated: (controller) {},
+        markers: shopMarker(),
+      ),
     );
   }
 

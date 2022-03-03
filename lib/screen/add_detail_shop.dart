@@ -55,7 +55,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('เพิ่มข้อมูลร้านค้า'),
+        title: Text('แก้ไขข้อมูลร้านค้า'),
       ),
       body: SingleChildScrollView(
         child: Column(
