@@ -68,6 +68,7 @@ class _DetailShopState extends State<DetailShop> {
   Widget showList() => Column(
         children: <Widget>[
           MyStyle().showTitleH2('รายละเอียดร้าน ${detailShopModel.nameShop}'),
+          showImage(),
           Row(
             children: [
               MyStyle().showTitleH2('ที่อยู่ของร้าน'),
@@ -81,6 +82,14 @@ class _DetailShopState extends State<DetailShop> {
           shopMap(),
         ],
       );
+
+  Container showImage() {
+    return Container(
+      width: 200.0,
+      height: 200.0,
+      child: Image.network('${MyConstant().domain}${detailShopModel.urlImage}'),
+    );
+  }
 
   Set<Marker> shopMarker() {
     return <Marker>[
