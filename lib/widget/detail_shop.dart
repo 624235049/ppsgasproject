@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/screen/add_detail_shop.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailShop extends StatefulWidget {
   String get id => null;
@@ -10,6 +16,32 @@ class DetailShop extends StatefulWidget {
 }
 
 class _DetailShopState extends State<DetailShop> {
+  DetailShopModel detailShopModel;
+
+  @override
+  void initState() {
+    super.initState();
+    readDataShop();
+  }
+
+  Future<Null> readDataShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id');
+    String url =
+        '${MyConstant().domain}/gasorderuser/getdetailShop.php?isAdd=true&id=2';
+    await Dio().get(url).then((value) {
+      print('value = $value');
+      var result = json.decode(value.data);
+      print('result = $result');
+      for (var map in result) {
+        setState(() {
+          detailShopModel = DetailShopModel.fromJson(map);
+        });
+        print('nameShop = ${detailShopModel.nameShop}');
+      }
+    });
+  }
+
   void routeToAddDetail() {
     print('routeToAddDetail Work');
     MaterialPageRoute materialPageRoute = MaterialPageRoute(
@@ -22,11 +54,18 @@ class _DetailShopState extends State<DetailShop> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        MyStyle().titleCenter(context, 'ยังไม่มีข้อมูลกรุณาเพิ่มด้วยค่ะ'),
+        detailShopModel == null
+            ? MyStyle().showProgress()
+            : detailShopModel.nameShop.isEmpty
+                ? showNoData(context)
+                : Text('Have Data'),
         addEditButton(),
       ],
     );
   }
+
+  Widget showNoData(BuildContext context) =>
+      MyStyle().titleCenter(context, 'ยังไม่มีข้อมูลกรุณาเพิ่มด้วยค่ะ');
 
   Row addEditButton() {
     return Row(

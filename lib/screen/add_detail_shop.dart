@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
+import 'package:ppsgasproject/model/user_model.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
@@ -22,19 +24,8 @@ class AddDetailShop extends StatefulWidget {
 class _AddDetailShopState extends State<AddDetailShop> {
   @override
   void initState() {
-    super.initState(); 
-    readDataShop();
+    super.initState();
     findLatLng();
-  }
-
-  Future<Null> readDataShop() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String id = preferences.getString('id');
-    String url =
-        '${MyConstant().domain}/gasorderuser/getdetailShop.php?isAdd=true&id=2';
-    await Dio().get(url).then(
-          (value) => {print('value = $value')},
-        );
   }
 
   //Field

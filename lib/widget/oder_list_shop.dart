@@ -13,15 +13,6 @@ class _OrderListShopState extends State<OrderListShop> {
   DetailShopModel detailShopModel;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    
-  }
-
-  
-
-  @override
   Widget build(BuildContext context) {
     return Text('รายการอาหารที่ลูกค้าสั่ง');
   }
