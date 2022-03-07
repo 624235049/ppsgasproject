@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/screen/add_detail_shop.dart';
+import 'package:ppsgasproject/screen/edit_detail_shop.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,9 +45,10 @@ class _DetailShopState extends State<DetailShop> {
   }
 
   void routeToAddDetail() {
-    print('routeToAddDetail Work');
+    Widget widget =
+        detailShopModel.nameShop.isEmpty ? AddDetailShop() : EditInfoShop();
     MaterialPageRoute materialPageRoute = MaterialPageRoute(
-      builder: (context) => AddDetailShop(),
+      builder: (context) => widget,
     );
     Navigator.push(context, materialPageRoute);
   }
@@ -79,6 +81,7 @@ class _DetailShopState extends State<DetailShop> {
               Text(detailShopModel.address),
             ],
           ),
+          MyStyle().mySizebox(),
           shopMap(),
         ],
       );
@@ -115,9 +118,7 @@ class _DetailShopState extends State<DetailShop> {
     LatLng latLng = LatLng(lat, lng);
     CameraPosition position = CameraPosition(target: latLng, zoom: 16.0);
 
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      height: 300.0,
+    return Expanded(
       child: GoogleMap(
         initialCameraPosition: position,
         mapType: MapType.normal,

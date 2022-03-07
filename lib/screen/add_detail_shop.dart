@@ -26,12 +26,14 @@ class _AddDetailShopState extends State<AddDetailShop> {
   void initState() {
     super.initState();
     findLatLng();
+    readCurrentInfo();
   }
 
   //Field
   double lat = 7.03653660428109, lng = 100.46865206267121;
   File file;
   String nameShop, address, phone, urlImage;
+  DetailShopModel detailShopModel;
 
   Future<Null> findLatLng() async {
     LocationData locationData = await findLocationData();
@@ -55,7 +57,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('แก้ไขข้อมูลร้านค้า'),
+        title: Text('เพิ่มข้อมูลร้านค้า'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -147,6 +149,27 @@ class _AddDetailShopState extends State<AddDetailShop> {
         normalDialog(context, 'ไม่สามารถบันทึกข้อมูลได้กรุณาลองใหม่');
       }
     } catch (e) {}
+  }
+
+  Future<Null> readCurrentInfo() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String idshop = preferences.getString('id');
+    print('idshop --> $idshop');
+
+    String url =
+        '${MyConstant().domain}/gasorderuser/getdetailShop.php?isAdd=true&id=2';
+    Response response = await Dio().get(url);
+    print('response ==> $response');
+
+    var result = json.decode(response.data);
+    print('result => $result');
+
+    for (var map in result) {
+      print('map ==> $map');
+      setState(() {
+        detailShopModel = DetailShopModel.fromJson(map);
+      });
+    }
   }
 
   Set<Marker> myMarker() {
