@@ -22,7 +22,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
   DetailShopModel detailShopModel;
   String nameShop, address, phone, urlImage;
   Location location = Location();
-  double lat, lng;
+  double lat = 7.03653660428109, lng = 100.46865206267121;
   File file;
 
   @override
@@ -108,7 +108,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        title: Text('คุณแน่ใจว่าจะ ปรับปรุงรายละเอียดร้าน นะคะ ?'),
+        title: Text('คุณแน่ใจว่าจะ ปรับปรุงรายละเอียดร้าน ?'),
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -118,11 +118,11 @@ class _EditInfoShopState extends State<EditInfoShop> {
                   Navigator.pop(context);
                   editThread();
                 },
-                child: Text('แน่ใจ'),
+                child: Text('ตกลง'),
               ),
               OutlineButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('ไม่แน่ใจ'),
+                child: Text('ยกเลิก'),
               ),
             ],
           )
@@ -140,7 +140,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
     map['file'] = await MultipartFile.fromFile(file.path, filename: nameFile);
     FormData formData = FormData.fromMap(map);
 
-    String urlUpload = '${MyConstant().domain}/gasorderuser/saveShop.php';
+    String urlUpload = '${MyConstant().domain}/gasorderuser/saveshop.php';
     await Dio().post(urlUpload, data: formData).then((value) async {
       urlImage = '/gasorderuser/Shop/$nameFile';
 
@@ -171,7 +171,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
 
   Container showMap() {
     CameraPosition cameraPosition = CameraPosition(
-      target: LatLng(lat, lng),
+      target: LatLng(lat = 7.03653660428109, lng = 100.46865206267121),
       zoom: 16.0,
     );
 
