@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
 class AddGasMenu extends StatefulWidget {
@@ -7,6 +11,9 @@ class AddGasMenu extends StatefulWidget {
 }
 
 class _AddGasMenuState extends State<AddGasMenu> {
+  File file;
+  String brandGas, price, gassize, gasdetail;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +30,8 @@ class _AddGasMenuState extends State<AddGasMenu> {
             MyStyle().mySizebox(),
             priceForm(),
             MyStyle().mySizebox(),
+            sizeForm(),
+            MyStyle().mySizebox(),
             detailForm(),
             MyStyle().mySizebox(),
             saveButton(),
@@ -37,7 +46,20 @@ class _AddGasMenuState extends State<AddGasMenu> {
       width: MediaQuery.of(context).size.width,
       child: RaisedButton.icon(
         color: MyStyle().primaryColor,
-        onPressed: () {},
+        onPressed: () {
+          if (file == null) {
+            normalDialog(context, 'ยังไม่ได้เลือกรูปภาพ Camera หรือ Gallery');
+          } else if (brandGas == null ||
+              brandGas.isEmpty ||
+              price == null ||
+              price.isEmpty ||
+              gassize == null ||
+              gassize.isEmpty ||
+              gasdetail == null ||
+              gasdetail.isEmpty) {
+            normalDialog(context, 'กรุณากรอกให้ครบทุกช่อง !');
+          }
+        },
         icon: Icon(
           Icons.save,
           color: Colors.white,
@@ -53,6 +75,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
   Widget nameForm() => Container(
         width: 250.0,
         child: TextField(
+          onChanged: (value) => brandGas = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.gavel_sharp),
             labelText: 'ยี่ห้อแก๊ส',
@@ -64,6 +87,8 @@ class _AddGasMenuState extends State<AddGasMenu> {
   Widget priceForm() => Container(
         width: 250.0,
         child: TextField(
+          keyboardType: TextInputType.number,
+          onChanged: (value) => price = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.attach_money),
             labelText: 'ราคาแก๊ส',
@@ -72,9 +97,22 @@ class _AddGasMenuState extends State<AddGasMenu> {
         ),
       );
 
+  Widget sizeForm() => Container(
+        width: 250.0,
+        child: TextField(
+          onChanged: (value) => gassize = value.trim(),
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.merge_type),
+            labelText: 'ขนาดแก๊ส',
+            border: OutlineInputBorder(),
+          ),
+        ),
+      );
+
   Widget detailForm() => Container(
         width: 250.0,
         child: TextField(
+          onChanged: (value) => gasdetail = value.trim(),
           keyboardType: TextInputType.multiline,
           maxLines: 3,
           decoration: InputDecoration(
@@ -89,15 +127,36 @@ class _AddGasMenuState extends State<AddGasMenu> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        IconButton(icon: Icon(Icons.add_a_photo), onPressed: null),
+        IconButton(
+          icon: Icon(Icons.add_a_photo),
+          onPressed: () => chooseImage(ImageSource.camera),
+        ),
         Container(
           width: 250.0,
           height: 250.0,
-          child: Image.asset('assets/images/gasimg2.png'),
+          child: file == null
+              ? Image.asset('assets/images/gasimg2.png')
+              : Image.file(file),
         ),
-        IconButton(icon: Icon(Icons.add_photo_alternate), onPressed: null),
+        IconButton(
+          icon: Icon(Icons.add_photo_alternate),
+          onPressed: () => chooseImage(ImageSource.gallery),
+        ),
       ],
     );
+  }
+
+  Future<Null> chooseImage(ImageSource source) async {
+    try {
+      var object = await ImagePicker().getImage(
+        source: source,
+        maxWidth: 800.0,
+        maxHeight: 800.0,
+      );
+      setState(() {
+        file = File(object.path);
+      });
+    } catch (e) {}
   }
 
   Widget showTitleGas(String string) {
