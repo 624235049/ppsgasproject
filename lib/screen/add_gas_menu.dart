@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddGasMenu extends StatefulWidget {
   @override
@@ -12,7 +16,7 @@ class AddGasMenu extends StatefulWidget {
 
 class _AddGasMenuState extends State<AddGasMenu> {
   File file;
-  String brandGas, price, gassize, gasdetail;
+  String brandGas, price, size, detail;
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +57,13 @@ class _AddGasMenuState extends State<AddGasMenu> {
               brandGas.isEmpty ||
               price == null ||
               price.isEmpty ||
-              gassize == null ||
-              gassize.isEmpty ||
-              gasdetail == null ||
-              gasdetail.isEmpty) {
+              size == null ||
+              size.isEmpty ||
+              detail == null ||
+              detail.isEmpty) {
             normalDialog(context, 'กรุณากรอกให้ครบทุกช่อง !');
+          } else {
+            uploadGasAndInsertData();
           }
         },
         icon: Icon(
@@ -70,6 +76,31 @@ class _AddGasMenuState extends State<AddGasMenu> {
         ),
       ),
     );
+  }
+
+  Future<Null> uploadGasAndInsertData() async {
+    String urlUpload = '${MyConstant().domain}/gasorderuser/saveGas.php';
+
+    Random random = Random();
+    int i = random.nextInt(1000000);
+    String nameFile = 'gas$i.jpg';
+
+    try {
+      Map<String, dynamic> map = Map();
+      map['file'] = await MultipartFile.fromFile(file.path, filename: nameFile);
+      FormData formData = FormData.fromMap(map);
+
+      await Dio().post(urlUpload, data: formData).then((value) async {
+        String urlPathImage = '/gasorderuser/Gas/$nameFile';
+        print('urlPathImage = ${MyConstant().domain}$urlPathImage');
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String idShop = preferences.getString('id');
+
+        String urlInsertData =
+            'http://192.168.31.104:8080/gasorderuser/addGas.php?isAdd=true&idShop=$idShop&BrandGas=$brandGas&PathImage=$urlPathImage&Price=$price&Size=$size&Detail=$detail';
+        await Dio().get(urlInsertData).then((value) => Navigator.pop(context));
+      });
+    } catch (e) {}
   }
 
   Widget nameForm() => Container(
@@ -100,7 +131,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
   Widget sizeForm() => Container(
         width: 250.0,
         child: TextField(
-          onChanged: (value) => gassize = value.trim(),
+          onChanged: (value) => size = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.merge_type),
             labelText: 'ขนาดแก๊ส',
@@ -112,7 +143,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
   Widget detailForm() => Container(
         width: 250.0,
         child: TextField(
-          onChanged: (value) => gasdetail = value.trim(),
+          onChanged: (value) => detail = value.trim(),
           keyboardType: TextInputType.multiline,
           maxLines: 3,
           decoration: InputDecoration(
