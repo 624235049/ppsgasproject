@@ -104,7 +104,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
         String idShop = preferences.getString('id');
 
         String urlInsertData =
-            'http://192.168.31.104:8080/gasorderuser/addGas.php?isAdd=true&idShop=$idShop&BrandGas=$brandGas&PathImage=$urlPathImage&Price=$price&Size=$size&Quantity=$quantity&Gastype=$gasType';
+            '${MyConstant().domain}/gasorderuser/addGas.php?isAdd=true&idShop=$idShop&BrandGas=$brandGas&PathImage=$urlPathImage&Price=$price&Size=$size&Quantity=$quantity&Gastype=$gasType';
         await Dio().get(urlInsertData).then((value) => Navigator.pop(context));
       });
     } catch (e) {}
