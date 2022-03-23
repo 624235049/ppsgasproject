@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/screen/add_gas_menu.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
+import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListGasShop extends StatefulWidget {
@@ -10,6 +14,11 @@ class ListGasShop extends StatefulWidget {
 }
 
 class _ListGasShopState extends State<ListGasShop> {
+  bool loadStatus = true; // Process load JSON
+  bool status = true; // Have Data
+  
+  List<GasModel> gasmodels = List();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -24,18 +33,39 @@ class _ListGasShopState extends State<ListGasShop> {
 
     String url =
         '${MyConstant().domain}/gasorderuser/getGasWhereidShop.php?isAdd=true&idShop=$idShop';
-    Response response = await Dio().get(url);
-    print('res = $response');
+    await Dio().get(url).then((value) {
+      setState(() {
+        loadStatus = false;
+      });
+
+      if (value.toString() != 'null') {
+        print('value ==> $value');
+        var result = json.decode(value.data);
+        print('result ==> $result');
+      } else {
+        setState(() {
+          status = false;
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Text('รายการแก๊สของร้าน'),
+        loadStatus ? MyStyle().showProgress() : showContent(),
         addGasButton(),
       ],
     );
+  }
+
+  Widget showContent() {
+    return status
+        ? Text('รายการแก๊สของร้านที่นี่')
+        : Center(
+            child: Text('ยังไม่มีรายการแก๊ส'),
+          );
   }
 
   Widget addGasButton() => Column(
