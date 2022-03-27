@@ -4,8 +4,10 @@ class MyStyle {
   Color darkColor = Colors.black;
   Color primaryColor = Colors.red;
 
-  Widget showProgress(){
-    return Center(child: CircularProgressIndicator(),);
+  Widget showProgress() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 
   SizedBox mySizebox() => SizedBox(
@@ -13,9 +15,10 @@ class MyStyle {
         height: 16.0,
       );
 
-  Widget titleCenter(BuildContext context,String string) {
+  Widget titleCenter(BuildContext context, String string) {
     return Center(
-      child: Container(width: MediaQuery.of(context).size.width*0.5,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.5,
         child: Text(
           string,
           style: TextStyle(
@@ -26,6 +29,23 @@ class MyStyle {
       ),
     );
   }
+
+  TextStyle mainTitle = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.redAccent,
+  );
+
+  TextStyle mainh2Title = TextStyle(
+    fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
+  TextStyle mainh3Title = TextStyle(
+    fontSize: 14.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
 
   Text showTitle(String title) => Text(
         title,

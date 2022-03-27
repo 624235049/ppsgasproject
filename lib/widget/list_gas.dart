@@ -16,7 +16,7 @@ class ListGasShop extends StatefulWidget {
 class _ListGasShopState extends State<ListGasShop> {
   bool loadStatus = true; // Process load JSON
   bool status = true; // Have Data
-  
+
   List<GasModel> gasmodels = List();
 
   @override
@@ -27,6 +27,10 @@ class _ListGasShopState extends State<ListGasShop> {
   }
 
   Future<Null> readGasMenu() async {
+    if (gasmodels.length != 0) {
+      gasmodels.clear();
+    }
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String idShop = preferences.getString('id');
     print('idShop = $idShop');
@@ -39,9 +43,16 @@ class _ListGasShopState extends State<ListGasShop> {
       });
 
       if (value.toString() != 'null') {
-        print('value ==> $value');
+        // print('value ==> $value');
         var result = json.decode(value.data);
-        print('result ==> $result');
+        // print('result ==> $result');
+
+        for (var map in result) {
+          GasModel gasModel = GasModel.fromJson(map);
+          setState(() {
+            gasmodels.add(gasModel);
+          });
+        }
       } else {
         setState(() {
           status = false;
@@ -62,11 +73,52 @@ class _ListGasShopState extends State<ListGasShop> {
 
   Widget showContent() {
     return status
-        ? Text('รายการแก๊สของร้านที่นี่')
+        ? showListGas()
         : Center(
             child: Text('ยังไม่มีรายการแก๊ส'),
           );
   }
+
+  Widget showListGas() => ListView.builder(
+        itemCount: gasmodels.length,
+        itemBuilder: (context, index) => Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(10.0),
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.width * 0.4,
+              child: Image.network(
+                  '${MyConstant().domain}${gasmodels[index].pathImage}'),
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.width * 0.4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    gasmodels[index].brandGas,
+                    style: MyStyle().mainTitle,
+                  ),
+                  Text(
+                    'ราคา ${gasmodels[index].price} บาท',
+                    style: MyStyle().mainh2Title,
+                  ),
+                  Text(
+                    'ขนาด ${gasmodels[index].size} kg',
+                    style: MyStyle().mainh3Title,
+                  ),
+                  Text(
+                    'จำนวน ${gasmodels[index].quantity} ถัง',
+                    style: MyStyle().mainh3Title,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget addGasButton() => Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -81,7 +133,8 @@ class _ListGasShopState extends State<ListGasShop> {
                     MaterialPageRoute route = MaterialPageRoute(
                       builder: (context) => AddGasMenu(),
                     );
-                    Navigator.push(context, route);
+                    Navigator.push(context, route)
+                        .then((value) => readGasMenu());
                   },
                   child: Icon(Icons.add),
                 ),
