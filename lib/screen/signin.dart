@@ -20,6 +20,15 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   String user, password;
+  bool passwordVisible = true;
+  bool confirmPassVissible = true;
+
+  @override
+  void initState() {
+    passwordVisible = true;
+    confirmPassVissible = true;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,9 +182,9 @@ class _SignInState extends State<SignIn> {
 
   Widget passwordForm() => Container(
         width: 250.0,
-        child: TextField(
+        child: TextFormField(
           onChanged: (value) => password = value.trim(),
-          obscureText: true,
+          obscureText: passwordVisible,
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.lock,
@@ -185,6 +194,17 @@ class _SignInState extends State<SignIn> {
               color: MyStyle().darkColor,
             ),
             labelText: 'Password :',
+            suffixIcon: IconButton(
+              icon: Icon(
+                passwordVisible ? Icons.visibility_off : Icons.visibility,
+                color: Colors.black54,
+              ),
+              onPressed: () {
+                setState(() {
+                  passwordVisible = !passwordVisible;
+                });
+              },
+            ),
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: MyStyle().darkColor)),
             focusedBorder: OutlineInputBorder(
