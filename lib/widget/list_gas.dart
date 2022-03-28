@@ -113,12 +113,61 @@ class _ListGasShopState extends State<ListGasShop> {
                     'จำนวน ${gasmodels[index].quantity} ถัง',
                     style: MyStyle().mainh3Title,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.amber,
+                        ),
+                        onPressed: null,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () => deleteGas(gasmodels[index]),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
           ],
         ),
       );
+
+  Future<Null> deleteGas(GasModel gasModel) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: MyStyle()
+            .showTitleH2('คุณต้องการลบ รายการแก๊ส ${gasModel.brandGas} ?'),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              FlatButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  String url =
+                      'http://192.168.31.105:8080/gasorderuser/deleteGasWhereid.php?isAdd=true&id=${gasModel.id}';
+                  await Dio().get(url).then((value) => readGasMenu());
+                },
+                child: Text('ยืนยัน'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('ยกเลิก'),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
   Widget addGasButton() => Column(
         mainAxisAlignment: MainAxisAlignment.end,

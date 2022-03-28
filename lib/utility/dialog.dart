@@ -7,7 +7,7 @@ Future<void> normalDialog(BuildContext context, String message) async {
       title: Text(message),
       children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.end,
-          children: [
+          children: <Widget>[
             FlatButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
