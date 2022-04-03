@@ -38,11 +38,11 @@ class _AddGasMenuState extends State<AddGasMenu> {
             MyStyle().mySizebox(),
             quantityForm(),
             MyStyle().mySizebox(),
-            showTitleGas('ประเภทแก๊ส'),
-            PTTRadio(),
-            UNIQRadio(),
-            SiamRadio(),
-            WorldRadio(),
+            // showTitleGas('ประเภทแก๊ส'),
+            // PTTRadio(),
+            // UNIQRadio(),
+            // SiamRadio(),
+            // WorldRadio(),
             saveButton(),
           ],
         ),
@@ -65,9 +65,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
               size == null ||
               size.isEmpty ||
               quantity == null ||
-              quantity.isEmpty ||
-              gasType == null ||
-              gasType.isEmpty) {
+              quantity.isEmpty) {
             normalDialog(context, 'กรุณากรอกให้ครบทุกช่อง !');
           } else {
             uploadGasAndInsertData();
@@ -104,7 +102,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
         String idShop = preferences.getString('id');
 
         String urlInsertData =
-            '${MyConstant().domain}/gasorderuser/addGas.php?isAdd=true&idShop=$idShop&BrandGas=$brandGas&PathImage=$urlPathImage&Price=$price&Size=$size&Quantity=$quantity&Gastype=$gasType';
+            '${MyConstant().domain}/gasorderuser/addGas.php?isAdd=true&idShop=$idShop&BrandGas=$brandGas&PathImage=$urlPathImage&Price=$price&Size=$size&Quantity=$quantity';
         await Dio().get(urlInsertData).then((value) => Navigator.pop(context));
       });
     } catch (e) {}
@@ -195,105 +193,105 @@ class _AddGasMenuState extends State<AddGasMenu> {
     } catch (e) {}
   }
 
-  Widget PTTRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 250.0,
-            child: Row(
-              children: <Widget>[
-                Radio(
-                    value: 'pttgas',
-                    groupValue: gasType,
-                    onChanged: (value) {
-                      setState(() {
-                        gasType = value;
-                      });
-                    }),
-                Text(
-                  'ปตท.แก๊ส',
-                  style: TextStyle(color: MyStyle().darkColor),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
+  // Widget PTTRadio() => Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Container(
+  //           width: 250.0,
+  //           child: Row(
+  //             children: <Widget>[
+  //               Radio(
+  //                   value: 'pttgas',
+  //                   groupValue: gasType,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       gasType = value;
+  //                     });
+  //                   }),
+  //               Text(
+  //                 'ปตท.แก๊ส',
+  //                 style: TextStyle(color: MyStyle().darkColor),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     );
 
-  Widget UNIQRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 250.0,
-            child: Row(
-              children: <Widget>[
-                Radio(
-                    value: 'uniquegas',
-                    groupValue: gasType,
-                    onChanged: (value) {
-                      setState(() {
-                        gasType = value;
-                      });
-                    }),
-                Text(
-                  'ยูนิคแก๊ส',
-                  style: TextStyle(color: MyStyle().darkColor),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
+  // Widget UNIQRadio() => Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Container(
+  //           width: 250.0,
+  //           child: Row(
+  //             children: <Widget>[
+  //               Radio(
+  //                   value: 'uniquegas',
+  //                   groupValue: gasType,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       gasType = value;
+  //                     });
+  //                   }),
+  //               Text(
+  //                 'ยูนิคแก๊ส',
+  //                 style: TextStyle(color: MyStyle().darkColor),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     );
 
-  Widget WorldRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 250.0,
-            child: Row(
-              children: <Widget>[
-                Radio(
-                    value: 'worldgas',
-                    groupValue: gasType,
-                    onChanged: (value) {
-                      setState(() {
-                        gasType = value;
-                      });
-                    }),
-                Text(
-                  'เวิลด์แก๊ส',
-                  style: TextStyle(color: MyStyle().darkColor),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
+  // Widget WorldRadio() => Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Container(
+  //           width: 250.0,
+  //           child: Row(
+  //             children: <Widget>[
+  //               Radio(
+  //                   value: 'worldgas',
+  //                   groupValue: gasType,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       gasType = value;
+  //                     });
+  //                   }),
+  //               Text(
+  //                 'เวิลด์แก๊ส',
+  //                 style: TextStyle(color: MyStyle().darkColor),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     );
 
-  Widget SiamRadio() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 250.0,
-            child: Row(
-              children: <Widget>[
-                Radio(
-                    value: 'siamgas',
-                    groupValue: gasType,
-                    onChanged: (value) {
-                      setState(() {
-                        gasType = value;
-                      });
-                    }),
-                Text(
-                  'สยามแก๊ส',
-                  style: TextStyle(color: MyStyle().darkColor),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
+  // Widget SiamRadio() => Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Container(
+  //           width: 250.0,
+  //           child: Row(
+  //             children: <Widget>[
+  //               Radio(
+  //                   value: 'siamgas',
+  //                   groupValue: gasType,
+  //                   onChanged: (value) {
+  //                     setState(() {
+  //                       gasType = value;
+  //                     });
+  //                   }),
+  //               Text(
+  //                 'สยามแก๊ส',
+  //                 style: TextStyle(color: MyStyle().darkColor),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     );
 
   Widget showTitleGas(String string) {
     return Container(

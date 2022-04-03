@@ -22,7 +22,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
   DetailShopModel detailShopModel;
   String nameShop, address, phone, urlImage;
   Location location = Location();
-  double lat = 7.03653660428109, lng = 100.46865206267121;
+  double lat, lng;
   File file;
 
   @override

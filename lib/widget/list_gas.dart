@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/screen/add_gas_menu.dart';
+import 'package:ppsgasproject/screen/edit_gas.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -94,45 +95,52 @@ class _ListGasShopState extends State<ListGasShop> {
               padding: EdgeInsets.all(10.0),
               width: MediaQuery.of(context).size.width * 0.5,
               height: MediaQuery.of(context).size.width * 0.4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    gasmodels[index].brandGas,
-                    style: MyStyle().mainTitle,
-                  ),
-                  Text(
-                    'ราคา ${gasmodels[index].price} บาท',
-                    style: MyStyle().mainh2Title,
-                  ),
-                  Text(
-                    'ขนาด ${gasmodels[index].size} kg',
-                    style: MyStyle().mainh3Title,
-                  ),
-                  Text(
-                    'จำนวน ${gasmodels[index].quantity} ถัง',
-                    style: MyStyle().mainh3Title,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          color: Colors.amber,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      gasmodels[index].brandGas,
+                      style: MyStyle().mainTitle,
+                    ),
+                    Text(
+                      'ราคา ${gasmodels[index].price} บาท',
+                      style: MyStyle().mainh2Title,
+                    ),
+                    Text(
+                      'จำนวน ${gasmodels[index].quantity} ถัง',
+                      style: MyStyle().mainh3Title,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.amber,
+                          ),
+                          onPressed: () {
+                            MaterialPageRoute route = MaterialPageRoute(
+                              builder: (context) => EditGasMenu(
+                                gasModel: gasmodels[index],
+                              ),
+                            );
+                            Navigator.push(context, route).then(
+                              (value) => readGasMenu(),
+                            );
+                          },
                         ),
-                        onPressed: null,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () => deleteGas(gasmodels[index]),
                         ),
-                        onPressed: () => deleteGas(gasmodels[index]),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -153,7 +161,7 @@ class _ListGasShopState extends State<ListGasShop> {
                 onPressed: () async {
                   Navigator.pop(context);
                   String url =
-                      'http://192.168.31.105:8080/gasorderuser/deleteGasWhereid.php?isAdd=true&id=${gasModel.id}';
+                      '${MyConstant().domain}/gasorderuser/deleteGasWhereid.php?isAdd=true&id=${gasModel.id}';
                   await Dio().get(url).then((value) => readGasMenu());
                 },
                 child: Text('ยืนยัน'),

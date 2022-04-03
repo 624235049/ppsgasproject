@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ppsgasproject/widget/detail_shop.dart';
 import 'package:ppsgasproject/widget/list_gas.dart';
 import 'package:ppsgasproject/widget/oder_list_shop.dart';
+import 'package:ppsgasproject/widget/size_gas.dart';
+import 'package:ppsgasproject/widget/type_gas.dart';
 
 import '../utility/my_style.dart';
 import '../utility/signout_process.dart';
@@ -37,6 +39,8 @@ class _MainShopState extends State<MainShop> {
             showHeadAdmin(),
             homeMenu(),
             gasMenu(),
+            typeGasMenu(),
+            sizeGasMenu(),
             detailgasMenu(),
             signOutMenu(),
           ],
@@ -59,10 +63,33 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.wallet_travel_sharp),
         title: Text('รายการแก๊ส'),
         // subtitle: Text('--'),
-        onTap: () {setState(() {
-          currentWidget = ListGasShop();
-        });
-        Navigator.pop(context);
+        onTap: () {
+          setState(() {
+            currentWidget = ListGasShop();
+          });
+          Navigator.pop(context);
+        },
+      );
+
+  ListTile typeGasMenu() => ListTile(
+        leading: Icon(Icons.merge_type),
+        title: Text('ประเภทแก๊ส'),
+        onTap: () {
+          setState(() {
+            currentWidget = TypeGasShop();
+          });
+          Navigator.pop(context);
+        },
+      );
+
+  ListTile sizeGasMenu() => ListTile(
+        leading: Icon(Icons.sanitizer),
+        title: Text('ขนาดแก๊ส'),
+        onTap: () {
+          setState(() {
+            currentWidget = SizeGasShop();
+          });
+          Navigator.pop(context);
         },
       );
 
@@ -70,10 +97,11 @@ class _MainShopState extends State<MainShop> {
         leading: Icon(Icons.info),
         title: Text('รายละเอียดของร้าน'),
         subtitle: Text('--'),
-        onTap: () {setState(() {
-          currentWidget = DetailShop();
-        });
-        Navigator.pop(context);
+        onTap: () {
+          setState(() {
+            currentWidget = DetailShop();
+          });
+          Navigator.pop(context);
         },
       );
 

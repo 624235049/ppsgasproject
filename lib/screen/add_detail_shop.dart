@@ -30,7 +30,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
   }
 
   //Field
-  double lat = 7.03653660428109, lng = 100.46865206267121;
+  double lat, lng;
   File file;
   String nameShop, address, phone, urlImage;
   DetailShopModel detailShopModel;
@@ -176,7 +176,7 @@ class _AddDetailShopState extends State<AddDetailShop> {
     return <Marker>[
       Marker(
         markerId: MarkerId('PPS Shop'),
-        position: LatLng(lat = 7.03653660428109, lng = 100.46865206267121),
+        position: LatLng(lat, lng),
         infoWindow: InfoWindow(
           title: 'ร้านPPSแก๊ส อยู่ที่นี่',
           snippet: 'ละติจูด = $lat , ลองติจูด = $lng',

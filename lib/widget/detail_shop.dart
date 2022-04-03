@@ -77,8 +77,18 @@ class _DetailShopState extends State<DetailShop> {
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(detailShopModel.address),
+              Container(
+                constraints: BoxConstraints(maxWidth: 300.0),
+                child: Text(
+                  detailShopModel.address,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black87,
+                      fontSize: 17.0),
+                ),
+              ),
             ],
           ),
           MyStyle().mySizebox(),
