@@ -9,6 +9,7 @@ import '../utility/my_style.dart';
 import '../utility/signout_process.dart';
 
 class MainShop extends StatefulWidget {
+
   @override
   _MainShopState createState() => _MainShopState();
 }

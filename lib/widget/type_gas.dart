@@ -1,4 +1,13 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ppsgasproject/model/gas_model.dart';
+import 'package:ppsgasproject/model/gas_type_model.dart';
+
+import 'package:ppsgasproject/utility/my_constant.dart';
+import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TypeGasShop extends StatefulWidget {
   @override
@@ -6,50 +15,50 @@ class TypeGasShop extends StatefulWidget {
 }
 
 class _TypeGasShopState extends State<TypeGasShop> {
-  final _formkey = GlobalKey<FormState>();
+  bool loadStatus = true; // Process load JSON
+  bool status = true; // Have Data
+  GasTypeModel gasTypeModel;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    readTypeGasShop();
+  }
+
+  Future<Null> readTypeGasShop() async {
+    // SharedPreferences preferences = await SharedPreferences.getInstance();
+    // String idtype = preferences.getString('id');
+
+    String url = '${MyConstant().domain}/gasorderuser/gettypeWhereidtype.php';
+
+    await Dio().get(url).then((value) {
+      setState(() {
+        loadStatus = false;
+      });
+      // print('value ==> $value');
+      var result = json.decode(value.data);
+      // print('result ==> $result');
+
+      for (var item in result) {
+        print('item ==> $item');
+        GasTypeModel model = GasTypeModel.fromJson(item);
+        print('brand gas ==>> ${model.brandGas}');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Center(
-          child: Text(
-            'จัดการประเภทแก๊ส',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            _formTypeGas(),
-          ],
-        ),
-      ),
+      body: loadStatus ? MyStyle().showProgress() : Text('ประเภทแก๊ส'),
+      // body: ListView.builder(
+      //   itemBuilder: (context, index) {
+      //     return Card(
+      //       child: Container(),
+      //     );
+      //   },
+      // ),
     );
   }
-
-  _formTypeGas() => Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-        child: Form(
-          key: _formkey,
-          child: Column(children: <Widget>[
-            TextFormField(
-              decoration: InputDecoration(labelText: 'ประเภทแก๊ส'),
-            ),
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                onPressed: () {},
-                child: Text('submit'),
-                color: Colors.red,
-                textColor: Colors.white,
-              ),
-            )
-          ]),
-        ),
-      );
 }
