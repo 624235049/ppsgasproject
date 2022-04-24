@@ -17,7 +17,10 @@ class TypeGasShop extends StatefulWidget {
 class _TypeGasShopState extends State<TypeGasShop> {
   bool loadStatus = true; // Process load JSON
   bool status = true; // Have Data
-  GasTypeModel gasTypeModel;
+  // GasTypeModel gasTypeModel;
+  // GasModel gasModel;
+
+  List<GasTypeModel> gastypeModel = [];
 
   @override
   void initState() {
@@ -43,22 +46,48 @@ class _TypeGasShopState extends State<TypeGasShop> {
       for (var item in result) {
         print('item ==> $item');
         GasTypeModel model = GasTypeModel.fromJson(item);
-        print('brand gas ==>> ${model.brandGas}');
+        // print('brand gas ==>> ${model.brandGas}');
+
+        setState(() {
+          gastypeModel.add(model);
+        });
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: loadStatus ? MyStyle().showProgress() : Text('ประเภทแก๊ส'),
-      // body: ListView.builder(
-      //   itemBuilder: (context, index) {
-      //     return Card(
-      //       child: Container(),
-      //     );
-      //   },
-      // ),
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: Scaffold(
+        body: loadStatus
+            ? MyStyle().showProgress()
+            : GridView.builder(
+                itemCount: gastypeModel.length,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 260),
+                itemBuilder: (context, index) => Column(
+                  children: [
+                    Container(
+                      child: TextFormField(
+                        initialValue: gastypeModel[index].id,
+                        style: MyStyle().mainh2Title,
+                      ),
+                    ),
+                    Container(
+                      child: TextFormField(
+                        initialValue: gastypeModel[index].brandGas,
+                        style: MyStyle().mainh2Title,
+                      ),
+                    ),
+                    ElevatedButton(
+                      child: Text('บันทึก'),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ),
+      ),
     );
   }
 }
