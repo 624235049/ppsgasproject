@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/screen/main_shop.dart';
 import 'package:ppsgasproject/screen/main_user.dart';
-import 'package:ppsgasproject/screen/man_emp.dart';
+import 'package:ppsgasproject/screen/main_emp.dart';
 import 'package:ppsgasproject/screen/signin.dart';
 import 'package:ppsgasproject/screen/signup.dart';
 import 'package:ppsgasproject/utility/dialog.dart';

@@ -66,26 +66,39 @@ class _TypeGasShopState extends State<TypeGasShop> {
                 itemCount: gastypeModel.length,
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 260),
-                itemBuilder: (context, index) => Column(
-                  children: [
-                    Container(
-                      child: TextFormField(
-                        initialValue: gastypeModel[index].id,
-                        style: MyStyle().mainh2Title,
+                itemBuilder: (context, index) => Column(children: <Widget>[
+                  Container(
+                    child: TextFormField(
+                      initialValue: gastypeModel[index].id,
+                      style: MyStyle().mainh2Title,
+                    ),
+                  ),
+                  Container(
+                    child: TextFormField(
+                      initialValue: gastypeModel[index].brandGas,
+                      style: MyStyle().mainh2Title,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.amber,
+                        ),
+                        onPressed: () => {},
                       ),
-                    ),
-                    Container(
-                      child: TextFormField(
-                        initialValue: gastypeModel[index].brandGas,
-                        style: MyStyle().mainh2Title,
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () => {},
                       ),
-                    ),
-                    ElevatedButton(
-                      child: Text('บันทึก'),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ]),
               ),
       ),
     );

@@ -8,6 +8,8 @@ class SizeGasShop extends StatefulWidget {
 class _SizeGasShopState extends State<SizeGasShop> {
   @override
   Widget build(BuildContext context) {
-    return Text('ขนาดแก๊ส');
+    return Stack(
+      children: <Widget>[],
+    );
   }
 }

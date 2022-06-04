@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
@@ -19,7 +20,7 @@ class EditGasMenu extends StatefulWidget {
 class _EditGasMenuState extends State<EditGasMenu> {
   GasModel gasModel;
   File file;
-  String name, price, qty, pathImage;
+  String name, price, size, qty, pathImage;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _EditGasMenuState extends State<EditGasMenu> {
     gasModel = widget.gasModel;
     name = gasModel.brandGas;
     price = gasModel.price;
+    size = gasModel.size;
     qty = gasModel.quantity;
     pathImage = gasModel.pathImage;
   }
@@ -47,7 +49,10 @@ class _EditGasMenuState extends State<EditGasMenu> {
             MyStyle().mySizebox(),
             priceGas(),
             MyStyle().mySizebox(),
+            sizeGas(),
+            MyStyle().mySizebox(),
             qtyGas(),
+            MyStyle().mySizebox(),
           ],
         ),
       ),
@@ -102,7 +107,18 @@ class _EditGasMenuState extends State<EditGasMenu> {
     );
   }
 
-  Future<Null> editValueOnMySQL() async {}
+  Future<Null> editValueOnMySQL() async {
+    String id = gasModel.id;
+    String url =
+        '${MyConstant().domain}/gasorderuser/editGasWhereId.php?isAdd=true&id=$id&BrandGas=$name&PathImage=$pathImage&Price=$price&Quantity=$qty';
+    await Dio().get(url).then((value) {
+      if (value.toString() == 'true') {
+        Navigator.pop(context);
+      } else {
+        normalDialog(context, 'กรุณาลองใหม่มีอะไร ผิดพลาด!');
+      }
+    });
+  }
 
   Row groupImage() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -175,6 +191,24 @@ class _EditGasMenuState extends State<EditGasMenu> {
               initialValue: price,
               decoration: InputDecoration(
                 labelText: 'ราคา',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget sizeGas() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 16.0),
+            width: 250.0,
+            child: TextFormField(
+              onChanged: (value) => size = value.trim(),
+              initialValue: size,
+              decoration: InputDecoration(
+                labelText: 'ขนาด',
                 border: OutlineInputBorder(),
               ),
             ),

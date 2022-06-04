@@ -108,6 +108,10 @@ class _ListGasShopState extends State<ListGasShop> {
                       style: MyStyle().mainh2Title,
                     ),
                     Text(
+                      'ขนาด ${gasmodels[index].size} กิโลกรัม',
+                      style: MyStyle().mainh2Title,
+                    ),
+                    Text(
                       'จำนวน ${gasmodels[index].quantity} ถัง',
                       style: MyStyle().mainh3Title,
                     ),

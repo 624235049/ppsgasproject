@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ppsgasproject/model/user_model.dart';
 import 'package:ppsgasproject/screen/main_shop.dart';
 import 'package:ppsgasproject/screen/main_user.dart';
-import 'package:ppsgasproject/screen/man_emp.dart';
+import 'package:ppsgasproject/screen/main_emp.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/widget/detail_shop.dart';
