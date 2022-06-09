@@ -27,11 +27,11 @@ class _EditGasMenuState extends State<EditGasMenu> {
     // TODO: implement initState
     super.initState();
     gasModel = widget.gasModel;
-    name = gasModel.brandGas;
+    name = gasModel.gas_brand_id;
     price = gasModel.price;
-    size = gasModel.size;
+    size = gasModel.gas_size_id;
     qty = gasModel.quantity;
-    pathImage = gasModel.pathImage;
+    pathImage = gasModel.path_image;
   }
 
   @override
@@ -39,7 +39,7 @@ class _EditGasMenuState extends State<EditGasMenu> {
     return Scaffold(
       floatingActionButton: upoloadButton(),
       appBar: AppBar(
-        title: Text('แก้ไข รายการแก๊ส ${gasModel.brandGas}'),
+        title: Text('แก้ไข รายการแก๊ส ${gasModel.gas_brand_id}'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -62,7 +62,7 @@ class _EditGasMenuState extends State<EditGasMenu> {
   FloatingActionButton upoloadButton() {
     return FloatingActionButton(
       onPressed: () {
-        if (name.isEmpty || price.isEmpty || qty.isEmpty) {
+        if (name.isEmpty || price.isEmpty || qty.isEmpty || size.isEmpty) {
           normalDialog(context, 'กรุณากรอกให้ครบทุกช่องค่ะ!');
         } else {
           confirmEdit();
@@ -108,9 +108,9 @@ class _EditGasMenuState extends State<EditGasMenu> {
   }
 
   Future<Null> editValueOnMySQL() async {
-    String id = gasModel.id;
+    String gas_id = gasModel.gas_id;
     String url =
-        '${MyConstant().domain}/gasorderuser/editGasWhereId.php?isAdd=true&id=$id&BrandGas=$name&PathImage=$pathImage&Price=$price&Quantity=$qty';
+        '${MyConstant().domain}/gas/editgas.php?isAdd=true&gas_id=$gas_id&gas_brand_id=$name&gas_size_id=$size&path_image=$pathImage&price=$price&quantity=$qty';
     await Dio().get(url).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);
@@ -135,7 +135,7 @@ class _EditGasMenuState extends State<EditGasMenu> {
             height: 250.0,
             child: file == null
                 ? Image.network(
-                    '${MyConstant().domain}${gasModel.pathImage}',
+                    '${MyConstant().domain}${gasModel.path_image}',
                     fit: BoxFit.cover,
                   )
                 : Image.file(file),

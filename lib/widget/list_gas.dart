@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +34,10 @@ class _ListGasShopState extends State<ListGasShop> {
     }
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String idShop = preferences.getString('id');
-    print('idShop = $idShop');
+    String gas_id = preferences.getString('gas_id');
+    // print('idShop = $idShop');
 
-    String url =
-        '${MyConstant().domain}/gasorderuser/getGasWhereidShop.php?isAdd=true&idShop=$idShop';
+    String url = '${MyConstant().domain}/gas/gas.php';
     await Dio().get(url).then((value) {
       setState(() {
         loadStatus = false;
@@ -66,8 +66,34 @@ class _ListGasShopState extends State<ListGasShop> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
+        MyStyle().backlogo(),
         loadStatus ? MyStyle().showProgress() : showContent(),
         addGasButton(),
+        // new Center(
+        //   child: new ClipRect(
+        //     child: new BackdropFilter(
+        //       filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        //       child: new Container(
+        //         width: 200.0,
+        //         height: 200.0,
+        //         decoration: new BoxDecoration(
+        //           color: Colors.grey.shade100.withOpacity(0.5),
+
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        // Container(
+        //   height: 600,
+        //   decoration: BoxDecoration(
+        //     image: DecorationImage(
+        //       image: AssetImage('assets/images/splash_logo.png'),
+        //       colorFilter: ColorFilter.mode(
+        //           Colors.white.withOpacity(0.8), BlendMode.modulate),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
@@ -89,7 +115,7 @@ class _ListGasShopState extends State<ListGasShop> {
               width: MediaQuery.of(context).size.width * 0.5,
               height: MediaQuery.of(context).size.width * 0.4,
               child: Image.network(
-                  '${MyConstant().domain}${gasmodels[index].pathImage}'),
+                  '${MyConstant().domain}${gasmodels[index].path_image}'),
             ),
             Container(
               padding: EdgeInsets.all(10.0),
@@ -100,7 +126,7 @@ class _ListGasShopState extends State<ListGasShop> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      gasmodels[index].brandGas,
+                      gasmodels[index].gas_brand_id,
                       style: MyStyle().mainTitle,
                     ),
                     Text(
@@ -108,7 +134,7 @@ class _ListGasShopState extends State<ListGasShop> {
                       style: MyStyle().mainh2Title,
                     ),
                     Text(
-                      'ขนาด ${gasmodels[index].size} กิโลกรัม',
+                      'ขนาด ${gasmodels[index].gas_size_id} กิโลกรัม',
                       style: MyStyle().mainh2Title,
                     ),
                     Text(
@@ -156,7 +182,7 @@ class _ListGasShopState extends State<ListGasShop> {
       context: context,
       builder: (context) => SimpleDialog(
         title: MyStyle()
-            .showTitleH2('คุณต้องการลบ รายการแก๊ส ${gasModel.brandGas} ?'),
+            .showTitleH2('คุณต้องการลบ รายการแก๊ส ${gasModel.gas_brand_id} ?'),
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -165,7 +191,7 @@ class _ListGasShopState extends State<ListGasShop> {
                 onPressed: () async {
                   Navigator.pop(context);
                   String url =
-                      '${MyConstant().domain}/gasorderuser/deleteGasWhereid.php?isAdd=true&id=${gasModel.id}';
+                      '${MyConstant().domain}/gas/deleteGasWhereid.php?isAdd=true&gas_id=${gasModel.gas_id}';
                   await Dio().get(url).then((value) => readGasMenu());
                 },
                 child: Text('ยืนยัน'),

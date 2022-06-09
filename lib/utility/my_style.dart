@@ -30,6 +30,7 @@ class MyStyle {
     );
   }
 
+//https://github.com/whisnuys/simple-login-page/blob/main/lib/login_page.dart //link ตกแต่งหน้าlogin github
   TextStyle mainTitle = TextStyle(
     fontSize: 18.0,
     fontWeight: FontWeight.bold,
@@ -72,8 +73,21 @@ class MyStyle {
 
   Container showLogo() {
     return Container(
-      width: 160.0,
-      child: Image.asset('assets/images/logogas.png'),
+      width: 250.0,
+      child: Image.asset('assets/images/splash_logo.png'),
+    );
+  }
+
+  Container backlogo() {
+    return Container(
+      height: 600,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/splash_logo.png'),
+          colorFilter: ColorFilter.mode(
+              Colors.white.withOpacity(0.10), BlendMode.modulate),
+        ),
+      ),
     );
   }
 

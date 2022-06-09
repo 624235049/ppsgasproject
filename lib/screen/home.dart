@@ -51,6 +51,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(),
       drawer: showDrawer(),
+      body: Stack(
+        children: <Widget>[
+          MyStyle().backlogo(),
+        ],
+      ),
     );
   }
 

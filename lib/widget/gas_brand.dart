@@ -1,0 +1,209 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:ppsgasproject/model/gas_model.dart';
+import 'package:ppsgasproject/model/gas_brand_model.dart';
+
+import 'package:ppsgasproject/utility/my_constant.dart';
+import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class TypeGasShop extends StatefulWidget {
+  @override
+  State<TypeGasShop> createState() => _TypeGasShopState();
+}
+
+class _TypeGasShopState extends State<TypeGasShop> {
+  bool loadStatus = true; // Process load JSON
+  bool status = true; // Have Data
+  // GasTypeModel gasTypeModel;
+  // GasModel gasModel;
+
+  List<GasBrandModel> gastypeModel = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    readTypeGasShop();
+  }
+
+  Future<Null> readTypeGasShop() async {
+    // SharedPreferences preferences = await SharedPreferences.getInstance();
+    // String idtype = preferences.getString('id');
+    if (gastypeModel.length != 0) {
+      gastypeModel.clear();
+    }
+
+    String url = '${MyConstant().domain}/gas/gasbrand.php';
+
+    await Dio().get(url).then((value) {
+      setState(() {
+        loadStatus = false;
+      });
+      // print('value ==> $value');
+      var result = json.decode(value.data);
+      // print('result ==> $result');
+
+      for (var item in result) {
+        // print('item ==> $item');
+        GasBrandModel model = GasBrandModel.fromJson(item);
+        // print('brand gas ==>> ${model.brandGas}');
+
+        setState(() {
+          gastypeModel.add(model);
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        MyStyle().backlogo(),
+        loadStatus ? MyStyle().showProgress() : showContent(),
+        addGasButton(),
+      ],
+    );
+  }
+
+  Widget showContent() {
+    return status
+        ? showListGas()
+        : Center(
+            child: Text('ยังไม่มีรายการแก๊ส'),
+          );
+  }
+
+  Widget showListGas() => ListView.builder(
+        itemCount: gastypeModel.length,
+        itemBuilder: (context, index) => Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(10.0),
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.width * 0.4,
+              child: Image.network(
+                  '${MyConstant().domain}${gastypeModel[index].gas_brand_image}'),
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              width: MediaQuery.of(context).size.width * 0.5,
+              height: MediaQuery.of(context).size.width * 0.4,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'ID : ${gastypeModel[index].gas_brand_id} ',
+                      style: MyStyle().mainTitle,
+                    ),
+                    Text(
+                      'ยี่ห้อ ${gastypeModel[index].gas_brand_name} ',
+                      style: MyStyle().mainh2Title,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.amber,
+                          ),
+                          onPressed: () {
+                            MaterialPageRoute route =
+                                MaterialPageRoute(builder: (context) => null);
+                            Navigator.push(context, route).then(
+                              (value) => readTypeGasShop(),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          // onPressed: () => deleteGas(gasmodels[index]),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget addGasButton() => Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    MaterialPageRoute route = MaterialPageRoute(
+                      builder: (context) => null,
+                    );
+                    Navigator.push(context, route)
+                        .then((value) => readTypeGasShop());
+                  },
+                  child: Icon(Icons.add),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+}
+
+
+// Container(
+//       padding: EdgeInsets.all(10.0),
+//       child: Scaffold(
+//         body: loadStatus
+//             ? MyStyle().showProgress()
+//             : GridView.builder(
+//                 itemCount: gastypeModel.length,
+//                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+//                     maxCrossAxisExtent: 260),
+//                 itemBuilder: (context, index) => Column(children: <Widget>[
+//                   Container(
+//                     child: TextFormField(
+//                       initialValue: gastypeModel[index].gas_brand_id,
+//                       style: MyStyle().mainh2Title,
+//                     ),
+//                   ),
+//                   Container(
+//                     child: TextFormField(
+//                       initialValue: gastypeModel[index].gas_brand_name,
+//                       style: MyStyle().mainh2Title,
+//                     ),
+//                   ),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: <Widget>[
+//                       IconButton(
+//                         icon: Icon(
+//                           Icons.edit,
+//                           color: Colors.amber,
+//                         ),
+//                         onPressed: () => {},
+//                       ),
+//                       IconButton(
+//                         icon: Icon(
+//                           Icons.delete,
+//                           color: Colors.red,
+//                         ),
+//                         onPressed: () => {},
+//                       ),
+//                     ],
+//                   ),
+//                 ]),
+//               ),
+//       ),

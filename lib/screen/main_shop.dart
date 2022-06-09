@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ppsgasproject/widget/detail_shop.dart';
 import 'package:ppsgasproject/widget/list_gas.dart';
 import 'package:ppsgasproject/widget/oder_list_shop.dart';
-import 'package:ppsgasproject/widget/size_gas.dart';
-import 'package:ppsgasproject/widget/type_gas.dart';
+import 'package:ppsgasproject/widget/gas_size.dart';
+import 'package:ppsgasproject/widget/gas_brand.dart';
 
 import '../utility/my_style.dart';
 import '../utility/signout_process.dart';

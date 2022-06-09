@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
+import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderListShop extends StatefulWidget {
@@ -14,6 +15,11 @@ class _OrderListShopState extends State<OrderListShop> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('รายการอาหารที่ลูกค้าสั่ง');
+    return Stack(
+      children: <Widget>[
+        MyStyle().backlogo(),
+        Text('รายการอาหารที่ลูกค้าสั่ง'),
+      ],
+    );
   }
 }

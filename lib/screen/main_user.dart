@@ -2,7 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ppsgasproject/screen/historypage.dart';
+import 'package:ppsgasproject/screen/home.dart';
+import 'package:ppsgasproject/screen/notification.dart';
+import 'package:ppsgasproject/screen/profilepage.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/widget/oder_list_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utility/my_style.dart';
@@ -20,6 +25,9 @@ class _MainUserState extends State<MainUser> {
   bool uniquegas = false;
   bool siamgas = false;
   String gasImage;
+
+  int currentIndex = 0;
+  bool exitPage = false;
 
   @override
   void initState() {
@@ -41,7 +49,7 @@ class _MainUserState extends State<MainUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nameUser == null ? 'Main User' : 'สวัสดีคุณ $nameUser '),
+        title: Text(nameUser == null ? 'Main User' : 'สวัสดีคุณ < $nameUser >'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app_sharp),
@@ -49,7 +57,7 @@ class _MainUserState extends State<MainUser> {
           )
         ],
       ),
-      drawer: showDrawer(),
+      // drawer: showDrawer(),
       body: Container(
         padding: EdgeInsets.all(8.0),
         child: Column(
@@ -109,22 +117,45 @@ class _MainUserState extends State<MainUser> {
               alignment: Alignment.bottomRight,
               child: CustomButton(
                 text: 'Next',
-                callback: () {
+                callback: () async {
                   if (gasImage == null) {
                     normalDialog(context, 'กรุณาเลือกยี่ห้อแก๊ส !');
                   } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {},
-                      ),
-                    );
+                    exitPage = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              OrderlistUser(imgAsset: gasImage),
+                        ));
                   }
                 },
               ),
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex,
+        onTap: (index) => setState(() => currentIndex = index),
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+              backgroundColor: Colors.red),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'HISTORY',
+              backgroundColor: Colors.red),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notification_add),
+              label: 'NOTIFICATION',
+              backgroundColor: Colors.red),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people_alt),
+              label: 'PROFILE',
+              backgroundColor: Colors.red),
+        ],
       ),
     );
   }
@@ -241,13 +272,13 @@ class _MainUserState extends State<MainUser> {
     );
   }
 
-  Drawer showDrawer() => Drawer(
-        child: ListView(
-          children: <Widget>[
-            showHead(),
-          ],
-        ),
-      );
+  // Drawer showDrawer() => Drawer(
+  //       child: ListView(
+  //         children: <Widget>[
+  //           showHead(),
+  //         ],
+  //       ),
+  //     );
 
   UserAccountsDrawerHeader showHead() {
     return UserAccountsDrawerHeader(

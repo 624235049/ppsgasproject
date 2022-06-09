@@ -4,19 +4,24 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddGasMenu extends StatefulWidget {
+  final GasModel gasModel;
+  AddGasMenu({Key key, this.gasModel}) : super(key: key);
+
   @override
   State<AddGasMenu> createState() => _AddGasMenuState();
 }
 
 class _AddGasMenuState extends State<AddGasMenu> {
+  GasModel gasModel;
   File file;
-  String brandGas, price, size, quantity, gasType;
+  String gas_brand_id, gas_size_id, path_image, price, size, quantity;
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +63,12 @@ class _AddGasMenuState extends State<AddGasMenu> {
         onPressed: () {
           if (file == null) {
             normalDialog(context, 'ยังไม่ได้เลือกรูปภาพ Camera หรือ Gallery');
-          } else if (brandGas == null ||
-              brandGas.isEmpty ||
+          } else if (gas_brand_id == null ||
+              gas_brand_id.isEmpty ||
               price == null ||
               price.isEmpty ||
-              size == null ||
-              size.isEmpty ||
+              gas_size_id == null ||
+              gas_size_id.isEmpty ||
               quantity == null ||
               quantity.isEmpty) {
             normalDialog(context, 'กรุณากรอกให้ครบทุกช่อง !');
@@ -84,7 +89,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
   }
 
   Future<Null> uploadGasAndInsertData() async {
-    String urlUpload = '${MyConstant().domain}/gasorderuser/saveGas.php';
+    String urlUpload = '${MyConstant().domain}/gas/saveGas.php';
 
     Random random = Random();
     int i = random.nextInt(1000000);
@@ -96,13 +101,13 @@ class _AddGasMenuState extends State<AddGasMenu> {
       FormData formData = FormData.fromMap(map);
 
       await Dio().post(urlUpload, data: formData).then((value) async {
-        String urlPathImage = '/gasorderuser/Gas/$nameFile';
-        print('urlPathImage = ${MyConstant().domain}$urlPathImage');
+        String path_image = '/gas/Gas/$nameFile';
+        print('path_image = ${MyConstant().domain}$path_image');
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        String idShop = preferences.getString('id');
+        String id_gas = preferences.getString('gas_id');
 
         String urlInsertData =
-            '${MyConstant().domain}/gasorderuser/addGas.php?isAdd=true&idShop=$idShop&BrandGas=$brandGas&PathImage=$urlPathImage&Price=$price&Size=$size&Quantity=$quantity';
+            '${MyConstant().domain}/gas/addGas.php?isAdd=true&gas_id=$id_gas&gas_brand_id=$gas_brand_id&gas_size_id=$gas_size_id&path_image=$path_image&price=$price&quantity=$quantity';
         await Dio().get(urlInsertData).then((value) => Navigator.pop(context));
       });
     } catch (e) {}
@@ -111,7 +116,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
   Widget nameForm() => Container(
         width: 250.0,
         child: TextField(
-          onChanged: (value) => brandGas = value.trim(),
+          onChanged: (value) => gas_brand_id = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.gavel_sharp),
             labelText: 'ยี่ห้อแก๊ส',
@@ -136,7 +141,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
   Widget sizeForm() => Container(
         width: 250.0,
         child: TextField(
-          onChanged: (value) => size = value.trim(),
+          onChanged: (value) => gas_size_id = value.trim(),
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.merge_type),
             labelText: 'ขนาดแก๊ส',

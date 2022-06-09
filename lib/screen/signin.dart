@@ -63,7 +63,6 @@ class _SignInState extends State<SignIn> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 MyStyle().showLogo(),
-                MyStyle().mySizebox(),
                 MyStyle().showTitle('เข้าสู่ระบบ'),
                 MyStyle().mySizebox(),
                 userForm(),

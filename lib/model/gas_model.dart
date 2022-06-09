@@ -1,44 +1,39 @@
 class GasModel {
-  String id;
-  String idShop;
-  String brandGas;
-  String pathImage;
+  String gas_id;
+  String gas_brand_id;
+  String gas_size_id;
+  String path_image;
   String price;
   String size;
   String quantity;
-  String gastype;
 
   GasModel(
-      {this.id,
-      this.idShop,
-      this.brandGas,
-      this.pathImage,
+      {this.gas_id,
+      this.gas_brand_id,
+      this.gas_size_id,
+      this.path_image,
       this.price,
       this.size,
-      this.quantity,
-      this.gastype});
+      this.quantity});
 
   GasModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    idShop = json['idShop'];
-    brandGas = json['BrandGas'];
-    pathImage = json['PathImage'];
-    price = json['Price'];
-    size = json['Size'];
-    quantity = json['Quantity'];
-    gastype = json['Gastype'];
+    gas_id = json['gas_id'];
+    gas_brand_id = json['gas_brand_id'];
+    gas_size_id = json['gas_size_id'];
+    path_image = json['path_image'];
+    price = json['price'];
+    size = json['size'];
+    quantity = json['quantity'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['idShop'] = this.idShop;
-    data['BrandGas'] = this.brandGas;
-    data['PathImage'] = this.pathImage;
-    data['Price'] = this.price;
-    data['Size'] = this.size;
-    data['Quantity'] = this.quantity;
-    data['Gastype'] = this.gastype;
+    data['gas_id'] = this.gas_id;
+    data['gas_brand_id'] = this.gas_brand_id;
+    data['path_image'] = this.path_image;
+    data['price'] = this.price;
+    data['size'] = this.size;
+    data['quantity'] = this.quantity;
     return data;
   }
 }
