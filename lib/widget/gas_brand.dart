@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/model/gas_brand_model.dart';
+import 'package:ppsgasproject/screen/edit_brand_gas.dart';
+import 'package:ppsgasproject/screen/edit_gas.dart';
 
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
@@ -20,7 +22,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
   // GasTypeModel gasTypeModel;
   // GasModel gasModel;
 
-  List<GasBrandModel> gastypeModel = [];
+  List<GasBrandModel> gasbrandModels = [];
 
   @override
   void initState() {
@@ -32,8 +34,8 @@ class _TypeGasShopState extends State<TypeGasShop> {
   Future<Null> readTypeGasShop() async {
     // SharedPreferences preferences = await SharedPreferences.getInstance();
     // String idtype = preferences.getString('id');
-    if (gastypeModel.length != 0) {
-      gastypeModel.clear();
+    if (gasbrandModels.length != 0) {
+      gasbrandModels.clear();
     }
 
     String url = '${MyConstant().domain}/gas/gasbrand.php';
@@ -52,7 +54,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
         // print('brand gas ==>> ${model.brandGas}');
 
         setState(() {
-          gastypeModel.add(model);
+          gasbrandModels.add(model);
         });
       }
     });
@@ -78,7 +80,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
   }
 
   Widget showListGas() => ListView.builder(
-        itemCount: gastypeModel.length,
+        itemCount: gasbrandModels.length,
         itemBuilder: (context, index) => Row(
           children: [
             Container(
@@ -86,7 +88,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
               width: MediaQuery.of(context).size.width * 0.5,
               height: MediaQuery.of(context).size.width * 0.4,
               child: Image.network(
-                  '${MyConstant().domain}${gastypeModel[index].gas_brand_image}'),
+                  '${MyConstant().domain}${gasbrandModels[index].gas_brand_image}'),
             ),
             Container(
               padding: EdgeInsets.all(10.0),
@@ -97,11 +99,11 @@ class _TypeGasShopState extends State<TypeGasShop> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'ID : ${gastypeModel[index].gas_brand_id} ',
+                      'ID : ${gasbrandModels[index].gas_brand_id} ',
                       style: MyStyle().mainTitle,
                     ),
                     Text(
-                      'ยี่ห้อ ${gastypeModel[index].gas_brand_name} ',
+                      'ยี่ห้อ ${gasbrandModels[index].gas_brand_name} ',
                       style: MyStyle().mainh2Title,
                     ),
                     Row(
@@ -113,8 +115,11 @@ class _TypeGasShopState extends State<TypeGasShop> {
                             color: Colors.amber,
                           ),
                           onPressed: () {
-                            MaterialPageRoute route =
-                                MaterialPageRoute(builder: (context) => null);
+                            MaterialPageRoute route = MaterialPageRoute(
+                              builder: (context) => EditBrandGas(
+                                gasbrandModel: gasbrandModels[index],
+                              ),
+                            );
                             Navigator.push(context, route).then(
                               (value) => readTypeGasShop(),
                             );
@@ -147,11 +152,11 @@ class _TypeGasShopState extends State<TypeGasShop> {
                 padding: EdgeInsets.only(bottom: 16.0, right: 16.0),
                 child: FloatingActionButton(
                   onPressed: () {
-                    MaterialPageRoute route = MaterialPageRoute(
-                      builder: (context) => null,
+                    MaterialPageRoute route =
+                        MaterialPageRoute(builder: (context) => null);
+                    Navigator.push(context, route).then(
+                      (value) => readTypeGasShop(),
                     );
-                    Navigator.push(context, route)
-                        .then((value) => readTypeGasShop());
                   },
                   child: Icon(Icons.add),
                 ),
