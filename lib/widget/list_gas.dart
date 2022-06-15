@@ -134,7 +134,7 @@ class _ListGasShopState extends State<ListGasShop> {
                       style: MyStyle().mainh2Title,
                     ),
                     Text(
-                      'ขนาด ${gasmodels[index].gas_size_id} กิโลกรัม',
+                      'ขนาด ${gasmodels[index].gas_size_id} ',
                       style: MyStyle().mainh2Title,
                     ),
                     Text(
@@ -177,12 +177,12 @@ class _ListGasShopState extends State<ListGasShop> {
         ),
       );
 
-  Future<Null> deleteGas(GasModel gasModel) async {
+  Future<Null> deleteGas(GasModel gasmodels) async {
     showDialog(
       context: context,
       builder: (context) => SimpleDialog(
         title: MyStyle()
-            .showTitleH2('คุณต้องการลบ รายการแก๊ส ${gasModel.gas_brand_id} ?'),
+            .showTitleH2('คุณต้องการลบ รายการแก๊ส ${gasmodels.gas_brand_id} ?'),
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -191,7 +191,7 @@ class _ListGasShopState extends State<ListGasShop> {
                 onPressed: () async {
                   Navigator.pop(context);
                   String url =
-                      '${MyConstant().domain}/gas/deleteGasWhereid.php?isAdd=true&gas_id=${gasModel.gas_id}';
+                      '${MyConstant().domain}/gas/deleteGasWhereid.php?isAdd=true&gas_id=${gasmodels.gas_id}';
                   await Dio().get(url).then((value) => readGasMenu());
                 },
                 child: Text('ยืนยัน'),

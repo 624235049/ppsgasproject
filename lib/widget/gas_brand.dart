@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/model/gas_brand_model.dart';
+import 'package:ppsgasproject/screen/add_brand_gas.dart';
 import 'package:ppsgasproject/screen/edit_brand_gas.dart';
 import 'package:ppsgasproject/screen/edit_gas.dart';
 
@@ -28,10 +29,10 @@ class _TypeGasShopState extends State<TypeGasShop> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    readTypeGasShop();
+    readBrandGasShop();
   }
 
-  Future<Null> readTypeGasShop() async {
+  Future<Null> readBrandGasShop() async {
     // SharedPreferences preferences = await SharedPreferences.getInstance();
     // String idtype = preferences.getString('id');
     if (gasbrandModels.length != 0) {
@@ -121,7 +122,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
                               ),
                             );
                             Navigator.push(context, route).then(
-                              (value) => readTypeGasShop(),
+                              (value) => readBrandGasShop(),
                             );
                           },
                         ),
@@ -130,7 +131,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
                             Icons.delete,
                             color: Colors.red,
                           ),
-                          // onPressed: () => deleteGas(gasmodels[index]),
+                          onPressed: () => deleteGas(gasbrandModels[index]),
                         ),
                       ],
                     ),
@@ -152,10 +153,11 @@ class _TypeGasShopState extends State<TypeGasShop> {
                 padding: EdgeInsets.only(bottom: 16.0, right: 16.0),
                 child: FloatingActionButton(
                   onPressed: () {
-                    MaterialPageRoute route =
-                        MaterialPageRoute(builder: (context) => null);
+                    MaterialPageRoute route = MaterialPageRoute(
+                      builder: (context) => AddBrandGasMenu(),
+                    );
                     Navigator.push(context, route).then(
-                      (value) => readTypeGasShop(),
+                      (value) => readBrandGasShop(),
                     );
                   },
                   child: Icon(Icons.add),
@@ -165,6 +167,36 @@ class _TypeGasShopState extends State<TypeGasShop> {
           ),
         ],
       );
+
+  Future<Null> deleteGas(GasBrandModel gasbrandModels) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: MyStyle().showTitleH2(
+            'คุณต้องการลบ รายการแก๊ส ${gasbrandModels.gas_brand_name} ?'),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              FlatButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  String url =
+                      '${MyConstant().domain}/gas/deletebrandWhereid.php?isAdd=true&gas_brand_id=${gasbrandModels.gas_brand_id}';
+                  await Dio().get(url).then((value) => readBrandGasShop());
+                },
+                child: Text('ยืนยัน'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('ยกเลิก'),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 }
 
 

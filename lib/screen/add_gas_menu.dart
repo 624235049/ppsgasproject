@@ -104,10 +104,10 @@ class _AddGasMenuState extends State<AddGasMenu> {
         String path_image = '/gas/Gas/$nameFile';
         print('path_image = ${MyConstant().domain}$path_image');
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        String id_gas = preferences.getString('gas_id');
+        String gas_id = preferences.getString('gas_id');
 
         String urlInsertData =
-            '${MyConstant().domain}/gas/addGas.php?isAdd=true&gas_id=$id_gas&gas_brand_id=$gas_brand_id&gas_size_id=$gas_size_id&path_image=$path_image&price=$price&quantity=$quantity';
+            '${MyConstant().domain}/gas/addGas.php?isAdd=true&gas_id=$gas_id&gas_brand_id=$gas_brand_id&gas_size_id=$gas_size_id&path_image=$path_image&price=$price&quantity=$quantity';
         await Dio().get(urlInsertData).then((value) => Navigator.pop(context));
       });
     } catch (e) {}
