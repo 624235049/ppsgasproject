@@ -1,20 +1,20 @@
 class GasSizeModel {
-  String gasSizeId;
-  String gasSizeName;
+  String gas_size_id;
+  String gas_size_name;
   String pathImage;
 
-  GasSizeModel({this.gasSizeId, this.gasSizeName, this.pathImage});
+  GasSizeModel({this.gas_size_id, this.gas_size_name, this.pathImage});
 
   GasSizeModel.fromJson(Map<String, dynamic> json) {
-    gasSizeId = json['gas_size_id'];
-    gasSizeName = json['gas_size_name'];
+    gas_size_id = json['gas_size_id'];
+    gas_size_name = json['gas_size_name'];
     pathImage = json['pathImage'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['gas_size_id'] = this.gasSizeId;
-    data['gas_size_name'] = this.gasSizeName;
+    data['gas_size_id'] = this.gas_size_id;
+    data['gas_size_name'] = this.gas_size_name;
     data['pathImage'] = this.pathImage;
     return data;
   }

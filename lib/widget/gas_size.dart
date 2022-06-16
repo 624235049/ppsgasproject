@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:ppsgasproject/model/gas_size_model.dart';
+import 'package:ppsgasproject/screen/add_size_gas.dart';
+import 'package:ppsgasproject/screen/edit_size_gas.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 
@@ -54,6 +56,7 @@ class _SizeGasShopState extends State<SizeGasShop> {
       children: <Widget>[
         MyStyle().backlogo(),
         loadStatus ? MyStyle().showProgress() : showContent(),
+        addGasButton(),
         // addGasButton(),
       ],
     );
@@ -87,11 +90,11 @@ class _SizeGasShopState extends State<SizeGasShop> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'ID : ${gassizeModel[index].gasSizeId} ',
+                      'ID : ${gassizeModel[index].gas_size_id} ',
                       style: MyStyle().mainTitle,
                     ),
                     Text(
-                      'ไซส์ ${gassizeModel[index].gasSizeName} ',
+                      'ไซส์ ${gassizeModel[index].gas_size_name} ',
                       style: MyStyle().mainh2Title,
                     ),
                     Row(
@@ -103,8 +106,11 @@ class _SizeGasShopState extends State<SizeGasShop> {
                             color: Colors.amber,
                           ),
                           onPressed: () {
-                            MaterialPageRoute route =
-                                MaterialPageRoute(builder: (context) => null);
+                            MaterialPageRoute route = MaterialPageRoute(
+                              builder: (context) => EditSizeGas(
+                                gassizeModels: gassizeModel[index],
+                              ),
+                            );
                             Navigator.push(context, route).then(
                               (value) => readSizeGas(),
                             );
@@ -115,7 +121,7 @@ class _SizeGasShopState extends State<SizeGasShop> {
                             Icons.delete,
                             color: Colors.red,
                           ),
-                          // onPressed: () => deleteGas(gasmodels[index]),
+                          onPressed: () => deleteGas(gassizeModel[index]),
                         ),
                       ],
                     ),
@@ -126,4 +132,61 @@ class _SizeGasShopState extends State<SizeGasShop> {
           ],
         ),
       );
+
+  Widget addGasButton() => Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(bottom: 16.0, right: 16.0),
+                child: FloatingActionButton(
+                  onPressed: () {
+                    MaterialPageRoute route = MaterialPageRoute(
+                      builder: (context) => AddSizeGasMenu(),
+                    );
+                    Navigator.push(context, route).then(
+                      (value) => readSizeGas(),
+                    );
+                  },
+                  child: Icon(Icons.add),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+
+  Future<Null> deleteGas(GasSizeModel gasSizeModel) async {
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: MyStyle().showTitleH2(
+            'คุณต้องการลบ รายการแก๊ส ${gasSizeModel.gas_size_name} ?'),
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              FlatButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  String url =
+                      '${MyConstant().domain}/gas/deletesizeWhereid.php?isAdd=true&gas_size_id=${gasSizeModel.gas_size_id}';
+                  await Dio().get(url).then(
+                        (value) => readSizeGas(),
+                      );
+                },
+                child: Text('ยืนยัน'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('ยกเลิก'),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 }

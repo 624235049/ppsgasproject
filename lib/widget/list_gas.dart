@@ -126,7 +126,7 @@ class _ListGasShopState extends State<ListGasShop> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      gasmodels[index].gas_brand_id,
+                      'ID:${gasmodels[index].gas_brand_id}',
                       style: MyStyle().mainTitle,
                     ),
                     Text(

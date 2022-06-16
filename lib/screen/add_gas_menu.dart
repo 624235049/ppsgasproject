@@ -102,7 +102,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
 
       await Dio().post(urlUpload, data: formData).then((value) async {
         String path_image = '/gas/Gas/$nameFile';
-        print('path_image = ${MyConstant().domain}$path_image');
+        // print('path_image = ${MyConstant().domain}$path_image');
         SharedPreferences preferences = await SharedPreferences.getInstance();
         String gas_id = preferences.getString('gas_id');
 
@@ -173,9 +173,7 @@ class _AddGasMenuState extends State<AddGasMenu> {
         Container(
           width: 250.0,
           height: 250.0,
-          child: file == null
-              ? Image.asset('assets/images/gasimg2.png')
-              : Image.file(file),
+          child: file == null ? MyStyle().showLogo() : Image.file(file),
         ),
         IconButton(
           icon: Icon(Icons.add_photo_alternate),

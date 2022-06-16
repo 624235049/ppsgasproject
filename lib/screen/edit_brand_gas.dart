@@ -6,6 +6,7 @@ import 'package:ppsgasproject/model/gas_brand_model.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
+import 'package:ppsgasproject/utility/my_style.dart';
 
 class EditBrandGas extends StatefulWidget {
   final GasBrandModel gasbrandModel;
@@ -33,7 +34,6 @@ class _EditBrandGasState extends State<EditBrandGas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: upoloadButton(),
       appBar: AppBar(
         title: Text('แก้ไขประเภทแก๊ส ${gasBrandModel.gas_brand_name}'),
       ),
@@ -42,22 +42,35 @@ class _EditBrandGasState extends State<EditBrandGas> {
           children: <Widget>[
             brandGas(),
             groupImage(),
+            MyStyle().mySizebox(),
+            saveButton(),
           ],
         ),
       ),
     );
   }
 
-  FloatingActionButton upoloadButton() {
-    return FloatingActionButton(
-      onPressed: () {
-        if (brand_name.isEmpty || brand_image.isEmpty) {
-          normalDialog(context, 'กรุณากรอกให้ครบทุกช่องค่ะ!');
-        } else {
-          confirmEdit();
-        }
-      },
-      child: Icon(Icons.cloud_upload),
+  Widget saveButton() {
+    return Container(
+      width: 200.0,
+      child: RaisedButton.icon(
+        color: MyStyle().primaryColor,
+        onPressed: () {
+          if (brand_name == null || brand_name.isEmpty) {
+            normalDialog(context, 'กรุณากรอกให้ครบทุกช่อง !');
+          } else {
+            confirmEdit();
+          }
+        },
+        icon: Icon(
+          Icons.save,
+          color: Colors.white,
+        ),
+        label: Text(
+          'Save GasMenu',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 
