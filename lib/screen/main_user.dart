@@ -1,12 +1,15 @@
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ppsgasproject/model/gas_brand_model.dart';
 import 'package:ppsgasproject/screen/historypage.dart';
 import 'package:ppsgasproject/screen/home.dart';
 import 'package:ppsgasproject/screen/notification.dart';
 import 'package:ppsgasproject/screen/profilepage.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/widget/oder_list_user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +29,9 @@ class _MainUserState extends State<MainUser> {
   bool siamgas = false;
   String gasImage;
 
+  List<GasBrandModel> gasbrandModels = List();
+  List<Widget> brandimageCards = List();
+
   int currentIndex = 0;
   bool exitPage = false;
 
@@ -34,9 +40,32 @@ class _MainUserState extends State<MainUser> {
     // TODO: implement initState
     super.initState();
     findUser();
+    readShop();
   }
 
-  Future<Null> readShop() async {}
+  Future<Null> readShop() async {
+    String url = '${MyConstant().domain}/gas/gasbrand.php';
+
+    await Dio().get(url).then((value) {
+      // print('value ==> $value');
+      var result = json.decode(value.data);
+      // print('result ==> $result');
+
+      for (var map in result) {
+        // print('item ==> $item');
+        GasBrandModel model = GasBrandModel.fromJson(map);
+        // print('brand gas ==>> ${model.brandGas}');
+
+        String gas_brand_image = model.gas_brand_image;
+        if (gas_brand_image.isNotEmpty) {
+          setState(() {
+            gasbrandModels.add(model);
+            brandimageCards.add(createCard(model));
+          });
+        }
+      }
+    });
+  }
 
   Future<Null> findUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -58,82 +87,13 @@ class _MainUserState extends State<MainUser> {
         ],
       ),
       // drawer: showDrawer(),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(
-                top: 10,
-              ),
-              child: Text(
-                'Order Now',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+      body: brandimageCards.length == 0
+          ? MyStyle().showProgress()
+          : GridView.extent(
+              maxCrossAxisExtent: 150.0,
+              children: brandimageCards,
             ),
-            Container(
-              margin: EdgeInsets.only(top: 20, left: 10, right: 10),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 10,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        ImagePtt(context),
-                        Imageworld(context),
 
-                        //=========ImageSecondrow
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 10,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Imageunique(context),
-                        Imagesiam(context),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                top: 30,
-                right: 20,
-              ),
-              width: double.infinity,
-              alignment: Alignment.bottomRight,
-              child: CustomButton(
-                text: 'Next',
-                callback: () async {
-                  if (gasImage == null) {
-                    normalDialog(context, 'กรุณาเลือกยี่ห้อแก๊ส !');
-                  } else {
-                    exitPage = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              OrderlistUser(imgAsset: gasImage),
-                        ));
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
@@ -286,5 +246,21 @@ class _MainUserState extends State<MainUser> {
         currentAccountPicture: MyStyle().showLogo(),
         accountName: Text('Name Login'),
         accountEmail: Text(' Login!'));
+  }
+
+  Widget createCard(GasBrandModel gasbrandModels) {
+    return Card(
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: 100.0,
+            height: 100.0,
+            child: Image.network(
+                '${MyConstant().domain}${gasbrandModels.gas_brand_image}'),
+          ),
+          Text(gasbrandModels.gas_brand_name),
+        ],
+      ),
+    );
   }
 }

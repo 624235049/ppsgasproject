@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class _AddGasMenuState extends State<AddGasMenu> {
   GasModel gasModel;
   File file;
   String gas_brand_id, gas_size_id, path_image, price, size, quantity;
+  String selectvalue;
+  List gasModels = List();
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +38,12 @@ class _AddGasMenuState extends State<AddGasMenu> {
             showTitleGas('รูปแก๊ส'),
             groupImage(),
             showTitleGas('รายละเอียดแก๊ส'),
-            nameForm(),
+            // nameForm(),
+            Dropdownbrandgas(),
+            MyStyle().mySizebox(),
+            Dropdownsizegas(),
             MyStyle().mySizebox(),
             priceForm(),
-            MyStyle().mySizebox(),
-            sizeForm(),
             MyStyle().mySizebox(),
             quantityForm(),
             MyStyle().mySizebox(),
@@ -55,6 +59,78 @@ class _AddGasMenuState extends State<AddGasMenu> {
     );
   }
 
+  DropdownButtonFormField<String> Dropdownbrandgas() {
+    return DropdownButtonFormField(
+        hint: Text('เลือกยี่ห้อแก๊ส'),
+        items: [
+          DropdownMenuItem<String>(
+            value: '1',
+            child: Center(
+              child: Text("PTT GAS"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: '2',
+            child: Center(
+              child: Text("UNIQUE GAS"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: '3',
+            child: Center(
+              child: Text("SIAM GAS"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: '4',
+            child: Center(
+              child: Text("WORLD GAS"),
+            ),
+          ),
+        ],
+        onChanged: (value) {
+          setState(() {
+            gas_brand_id = value;
+          });
+        });
+  }
+
+  DropdownButtonFormField<String> Dropdownsizegas() {
+    return DropdownButtonFormField(
+        hint: Text('เลือกขนาดแก๊ส'),
+        items: [
+          DropdownMenuItem<String>(
+            value: '1',
+            child: Center(
+              child: Text("S"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: '2',
+            child: Center(
+              child: Text("M"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: '3',
+            child: Center(
+              child: Text("L"),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: '4',
+            child: Center(
+              child: Text("XL"),
+            ),
+          ),
+        ],
+        onChanged: (value) {
+          setState(() {
+            gas_size_id = value;
+          });
+        });
+  }
+
   Widget saveButton() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -63,14 +139,15 @@ class _AddGasMenuState extends State<AddGasMenu> {
         onPressed: () {
           if (file == null) {
             normalDialog(context, 'ยังไม่ได้เลือกรูปภาพ Camera หรือ Gallery');
-          } else if (gas_brand_id == null ||
-              gas_brand_id.isEmpty ||
+          } else if (
+              // gas_brand_id == null ||
+              //   gas_brand_id.isEmpty ||
               price == null ||
-              price.isEmpty ||
-              gas_size_id == null ||
-              gas_size_id.isEmpty ||
-              quantity == null ||
-              quantity.isEmpty) {
+                  price.isEmpty ||
+                  // gas_size_id == null ||
+                  // gas_size_id.isEmpty ||
+                  quantity == null ||
+                  quantity.isEmpty) {
             normalDialog(context, 'กรุณากรอกให้ครบทุกช่อง !');
           } else {
             uploadGasAndInsertData();
@@ -113,17 +190,17 @@ class _AddGasMenuState extends State<AddGasMenu> {
     } catch (e) {}
   }
 
-  Widget nameForm() => Container(
-        width: 250.0,
-        child: TextField(
-          onChanged: (value) => gas_brand_id = value.trim(),
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.gavel_sharp),
-            labelText: 'ยี่ห้อแก๊ส',
-            border: OutlineInputBorder(),
-          ),
-        ),
-      );
+  // Widget nameForm() => Container(
+  //       width: 250.0,
+  //       child: TextField(
+  //         onChanged: (value) => gas_brand_id = value.trim(),
+  //         decoration: InputDecoration(
+  //           prefixIcon: Icon(Icons.gavel_sharp),
+  //           labelText: 'ยี่ห้อแก๊ส',
+  //           border: OutlineInputBorder(),
+  //         ),
+  //       ),
+  //     );
 
   Widget priceForm() => Container(
         width: 250.0,
