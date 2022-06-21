@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ppsgasproject/utility/theme.dart';
 
 class MyStyle {
   Color darkColor = Colors.black;
@@ -61,6 +62,14 @@ class MyStyle {
         style: TextStyle(
             fontSize: 18.0,
             color: Colors.blue.shade900,
+            fontWeight: FontWeight.bold),
+      );
+
+  Text showTitleH3(String title) => Text(
+        title,
+        style: TextStyle(
+            fontSize: 16.0,
+            color: Color(0xff222222),
             fontWeight: FontWeight.bold),
       );
 
