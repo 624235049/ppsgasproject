@@ -60,7 +60,7 @@ class _EditInfoShopState extends State<EditInfoShop> {
         nameShop = detailShopModel.nameShop;
         address = detailShopModel.address;
         phone = detailShopModel.phone;
-        urlImage = detailShopModel.urlImage;
+        urlImage = detailShopModel.urlPicture;
       });
     }
   }

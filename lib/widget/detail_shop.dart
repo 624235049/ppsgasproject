@@ -24,13 +24,13 @@ class _DetailShopState extends State<DetailShop> {
   void initState() {
     super.initState();
     readDataShop();
+    // detailShopModel = widget.detailShopModel;
   }
 
   Future<Null> readDataShop() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String id = preferences.getString('id');
-    String url =
-        '${MyConstant().domain}/gasorderuser/getdetailShop.php?isAdd=true&id=2';
+    String url = '${MyConstant().domain}/gas/getdetailShop.php';
     await Dio().get(url).then((value) {
       print('value = $value');
       var result = json.decode(value.data);
@@ -100,7 +100,8 @@ class _DetailShopState extends State<DetailShop> {
     return Container(
       width: 200.0,
       height: 200.0,
-      child: Image.network('${MyConstant().domain}${detailShopModel.urlImage}'),
+      child:
+          Image.network('${MyConstant().domain}${detailShopModel.urlPicture}'),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/model/gas_brand_model.dart';
 import 'package:ppsgasproject/screen/show_shop_gasmenu.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
@@ -14,6 +15,7 @@ class ShowListShop extends StatefulWidget {
 class _ShowListShopState extends State<ShowListShop> {
   List<GasBrandModel> gasbrandModels = List();
   List<Widget> brandimageCards = List();
+  List<DetailShopModel> detailshopModels = List();
 
   @override
   void initState() {
@@ -54,7 +56,7 @@ class _ShowListShopState extends State<ShowListShop> {
         print('Your click index $index');
         MaterialPageRoute route = MaterialPageRoute(
           builder: (context) => ShowShopGasMenu(
-            gasBrandModels: gasbrandModels[index],
+            gasBrandModel: gasbrandModels[index],
           ),
         );
         Navigator.push(context, route);
