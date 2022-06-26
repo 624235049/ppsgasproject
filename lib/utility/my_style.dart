@@ -33,13 +33,19 @@ class MyStyle {
 
 //https://github.com/whisnuys/simple-login-page/blob/main/lib/login_page.dart //link ตกแต่งหน้าlogin github
   TextStyle mainTitle = TextStyle(
-    fontSize: 18.0,
-    fontWeight: FontWeight.bold,
-    color: Colors.redAccent,
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    color: Color(0xff2972ff),
   );
 
   TextStyle mainh2Title = TextStyle(
     fontSize: 15.0,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
+
+  TextStyle mainh1Title = TextStyle(
+    fontSize: 18.0,
     fontWeight: FontWeight.bold,
     color: Colors.black,
   );

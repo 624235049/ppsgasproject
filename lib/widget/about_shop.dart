@@ -28,7 +28,9 @@ class _AboutShopState extends State<AboutShop> {
   DetailShopModel detailShopModel;
   double lat1, lng1, lat2, lng2, distance;
   String distanceString;
+  int transport;
   Position userlocation;
+  CameraPosition position;
 
   @override
   void initState() {
@@ -65,7 +67,22 @@ class _AboutShopState extends State<AboutShop> {
 
       var myFormat = NumberFormat('#0.0#', 'en_US');
       distanceString = myFormat.format(distance);
+
+      transport = calculateTransport(distance);
+      print('distance = $distance');
+      print('transport = $transport');
     });
+  }
+
+  int calculateTransport(double distance) {
+    int transport;
+    if (distance < 1.0) {
+      transport = 35;
+      return transport;
+    } else {
+      transport = 35 + (distance - 1).round() * 10;
+      return transport;
+    }
   }
 
   double calculateDistance(double lat1, double lng1, double lat2, double lng2) {
@@ -92,14 +109,16 @@ class _AboutShopState extends State<AboutShop> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        detailShopModel == null
-            ? MyStyle().showProgress()
-            : detailShopModel.nameShop.isEmpty
-                ? showNoData(context)
-                : showList()
-      ],
+    return SingleChildScrollView(
+      child: Stack(
+        children: <Widget>[
+          detailShopModel == null
+              ? MyStyle().showProgress()
+              : detailShopModel.nameShop.isEmpty
+                  ? showNoData(context)
+                  : showList()
+        ],
+      ),
     );
   }
 
@@ -126,10 +145,9 @@ class _AboutShopState extends State<AboutShop> {
   Widget showList() => Column(
         children: <Widget>[
           MyStyle().mySizebox(),
-          MyStyle().showTitleH2('รายละเอียดร้าน ${detailShopModel.nameShop}'),
+          MyStyle().showTitleH2('${detailShopModel.nameShop}'),
           MyStyle().mySizebox(),
-          showImage(),
-          MyStyle().mySizebox(),
+          showMap(),
           ListTile(
             leading: Icon(Icons.home_work_rounded),
             title: Text(detailShopModel.address),
@@ -139,17 +157,65 @@ class _AboutShopState extends State<AboutShop> {
             title: Text(detailShopModel.phone),
           ),
           ListTile(
-            leading: Icon(Icons.directions_bike),
-            title: Text(distance == null ? '' : '$distanceString กิโลเมตร'),
+            leading: Icon(Icons.social_distance),
+            title: Text(distance == null
+                ? 'กำลังคำนวณระยะทาง...'
+                : '$distanceString กิโลเมตร'),
           ),
           ListTile(
-            leading: Icon(Icons.transfer_within_a_station),
-            title: Text('28 บาท'),
+            leading: Icon(Icons.monetization_on_outlined),
+            title:
+                Text(transport == null ? 'กำลังคำนวณราคา..' : '$transport บาท'),
           ),
           MyStyle().mySizebox(),
-          // shopMap(),
         ],
       );
+
+  Container showMap() {
+    if (lat1 != null) {
+      LatLng latLng1 = LatLng(lat1, lng1);
+      position = CameraPosition(
+        target: latLng1,
+        zoom: 12.0,
+      );
+    }
+
+    Marker userMarker() {
+      return Marker(
+        markerId: MarkerId('userMarker'),
+        position: LatLng(lat1, lng1),
+        icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
+        infoWindow: InfoWindow(title: 'คุณอยู่ที่นี่'),
+      );
+    }
+
+    Marker shopMarker() {
+      return Marker(
+        markerId: MarkerId('shopMarker'),
+        position: LatLng(lat2, lng2),
+        icon: BitmapDescriptor.defaultMarkerWithHue(150.0),
+        infoWindow: InfoWindow(title: 'ร้านPPSแก๊ส'),
+      );
+    }
+
+    Set<Marker> mySet() {
+      return <Marker>[userMarker(), shopMarker()].toSet();
+    }
+
+    return Container(
+      margin: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 32),
+      // color: Colors.grey,
+      height: 250,
+      child: lat1 == null
+          ? MyStyle().showProgress()
+          : GoogleMap(
+              initialCameraPosition: position,
+              mapType: MapType.normal,
+              onMapCreated: (controller) {},
+              markers: mySet(),
+            ),
+    );
+  }
 
   Container showImage() {
     return Container(

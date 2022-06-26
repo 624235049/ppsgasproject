@@ -60,10 +60,17 @@ class _MainUserState extends State<MainUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nameUser == null ? 'Main User' : 'Welcome < $nameUser >'),
+        backgroundColor: Colors.red,
+        title: Text(
+          nameUser == null ? 'Main User' : 'สวัสดีคุณ < $nameUser >',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.white,
+            ),
             onPressed: () => signOutProcess(context),
           )
         ],

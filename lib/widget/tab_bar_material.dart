@@ -17,6 +17,7 @@ class _TabbarMaterialWidgetState extends State<TabbarMaterialWidget> {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      color: Color(0xfff1f1f5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

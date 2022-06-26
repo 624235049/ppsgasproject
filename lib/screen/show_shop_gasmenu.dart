@@ -21,9 +21,8 @@ class ShowShopGasMenu extends StatefulWidget {
 
 class _ShowShopGasMenuState extends State<ShowShopGasMenu> {
   GasBrandModel gasBrandModel;
-
+  List<Widget> pages = List();
   String nameShop;
-
   Widget currentWidget;
   String currentPage;
   Widget tabbarWidget;
@@ -33,14 +32,21 @@ class _ShowShopGasMenuState extends State<ShowShopGasMenu> {
     // TODO: implement initState
     super.initState();
     gasBrandModel = widget.gasBrandModel;
-
     currentWidget = ShowListShop();
+    pages.add(
+      ShowMenuOderGas(
+        gasBrandModel: gasBrandModel,
+      ),
+    );
+    pages.add(
+      AboutShop(),
+    );
   }
 
-  final pages = <Widget>[
-    ShowMenuOderGas(),
-    AboutShop(),
-  ];
+  // final pages = <Widget>[
+  //   ShowMenuOderGas(),
+  //   AboutShop(),
+  // ];
 
   void onChangedTab(int index) {
     setState(() {

@@ -34,7 +34,8 @@ class _TypeGasShopState extends State<TypeGasShop> {
 
   Future<Null> readBrandGasShop() async {
     // SharedPreferences preferences = await SharedPreferences.getInstance();
-    // String idtype = preferences.getString('id');
+    // int idbrand = preferences.getInt('gas_brand_id');
+
     if (gasbrandModels.length != 0) {
       gasbrandModels.clear();
     }
@@ -52,7 +53,7 @@ class _TypeGasShopState extends State<TypeGasShop> {
       for (var item in result) {
         // print('item ==> $item');
         GasBrandModel model = GasBrandModel.fromJson(item);
-        // print('brand gas ==>> ${model.brandGas}');
+        print('brand gas ==>> ${model.gas_brand_id}');
 
         setState(() {
           gasbrandModels.add(model);
