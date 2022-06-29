@@ -2,16 +2,24 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
+import 'package:location/location.dart';
+import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/model/gas_brand_model.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/model/gas_size_model.dart';
+import 'package:ppsgasproject/utility/my_api.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:ppsgasproject/widget/about_shop.dart';
+import 'package:ppsgasproject/widget/detail_shop.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ppsgasproject/widget/gas_brand.dart';
 
 class ShowMenuOderGas extends StatefulWidget {
   final GasBrandModel gasBrandModel;
+
   ShowMenuOderGas({Key key, this.gasBrandModel}) : super(key: key);
   @override
   State<ShowMenuOderGas> createState() => _ShowMenuOderGasState();
@@ -23,13 +31,65 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
   String gas_brand_id, gas_size_id;
   List<GasModel> gasModels = List();
   List<GasSizeModel> gassizemodel = List();
+  DetailShopModel detailShopModels;
+
   int amount = 1;
+  double lat1, lng1, lat2, lng2;
+  Location location = Location();
+  Position userlocation;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     gasBrandModel = widget.gasBrandModel;
+
     readGasOrderMenu();
+    findLocation();
+    readDataShop();
+  }
+
+  // Future<Null> findLocation() async {
+  //   location.onLocationChanged.listen((event) {
+  //     lat1 = event.latitude;
+  //     lng1 = event.longitude;
+  //     print(' lat1 = $lat1 lng1 = $lng1');
+  //   });
+  // }
+
+  Future<Null> readDataShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id');
+    String url = '${MyConstant().domain}/gas/getdetailShop.php';
+    await Dio().get(url).then((value) {
+      // print('value = $value');
+      var result = json.decode(value.data);
+      // print('result = $result');
+      for (var map in result) {
+        setState(() {
+          detailShopModels = DetailShopModel.fromJson(map);
+        });
+        // print('nameShop = ${detailShopModel.nameShop}');
+      }
+    });
+  }
+
+  Future<Position> getLocation() async {
+    try {
+      userlocation = await Geolocator.getCurrentPosition(
+        forceAndroidLocationManager: true,
+      );
+      return userlocation;
+    } catch (e) {
+      userlocation = null;
+    }
+  }
+
+  Future<Null> findLocation() async {
+    Position position = await getLocation();
+    setState(() {
+      lat1 = position.latitude;
+      lng1 = position.longitude;
+    });
   }
 
   Future<Null> readGasOrderMenu() async {
@@ -41,7 +101,7 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
     Response response = await Dio().get(url);
     // print('res1 --> $response');
     var result = json.decode(response.data);
-    print('result =$result');
+    // print('result =$result');
 
     for (var map in result) {
       GasModel gasModel = GasModel.fromJson(map);
@@ -59,7 +119,7 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
             itemCount: gasModels.length,
             itemBuilder: (context, index) => GestureDetector(
               onTap: () {
-                print('You click == $index');
+                // print('You click == $index');
                 amount = 1;
                 confirmOrder(index);
               },
@@ -116,6 +176,10 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text(
+                'รหัส : ${gasModels[index].gas_id} ',
+                style: MyStyle().mainh1Title,
+              ),
               Text(
                 'ขนาด ${gasModels[index].gas_size_id} Kg',
                 style: MyStyle().mainh1Title,
@@ -182,10 +246,10 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
                       ),
                       onPressed: () {
                         Navigator.pop(context);
-                        print(
-                            'Order ${gasModels[index].gas_size_id} = $amount');
+                        // print(
+                        //     'Order ${gasModels[index].gas_size_id} = $amount');
 
-                        addOrderToCart();
+                        addOrderToCart(index);
                       },
                       child: Text(
                         'ใส่ตะกร้า',
@@ -218,5 +282,27 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
     );
   }
 
-  void addOrderToCart() {}
+  Future<Null> addOrderToCart(int index) async {
+    String gas_brand_id = gasBrandModel.gas_brand_id;
+    String gas_brand_name = gasBrandModel.gas_brand_name;
+    String gas_id = gasModels[index].gas_id;
+    String gas_size_id = gasModels[index].gas_size_id;
+    String price = gasModels[index].price;
+
+    int priceInt = int.parse(price);
+    int sumInt = priceInt * amount;
+
+    lat2 = double.parse(detailShopModels.lat);
+    lng2 = double.parse(detailShopModels.lng);
+    double distance = MyAPI().calculateDistance(lat1, lng1, lat2, lng2);
+
+    var myFormat = NumberFormat('##0.0#', 'en_US');
+    String distanceString = myFormat.format(distance);
+
+    int transport = MyAPI().calculateTransport(distance);
+
+    print(
+      'gas_id == $gas_id, gas_brand_id == $gas_brand_id, gas_brand_name $gas_brand_name gas_size_id == $gas_size_id price == $price amount == $amount, sum == $sumInt, distance == $distanceString, Transpot == $transport',
+    );
+  }
 }
