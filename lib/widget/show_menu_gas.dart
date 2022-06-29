@@ -23,6 +23,7 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
   String gas_brand_id, gas_size_id;
   List<GasModel> gasModels = List();
   List<GasSizeModel> gassizemodel = List();
+  int amount = 1;
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +60,7 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
             itemBuilder: (context, index) => GestureDetector(
               onTap: () {
                 print('You click == $index');
+                amount = 1;
                 confirmOrder(index);
               },
               child: Row(
@@ -106,78 +108,115 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
   Future<Null> confirmOrder(int index) async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'ขนาด ${gasModels[index].gas_size_id} Kg',
-              style: MyStyle().mainh1Title,
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              width: 200,
-              height: 180,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                image: DecorationImage(
-                  image: NetworkImage(
-                      '${MyConstant().domain}${gasModels[index].path_image}'),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'ขนาด ${gasModels[index].gas_size_id} Kg',
+                style: MyStyle().mainh1Title,
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                width: 200,
+                height: 180,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  image: DecorationImage(
+                    image: NetworkImage(
+                        '${MyConstant().domain}${gasModels[index].path_image}'),
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                IconButton(
-                    icon: Icon(
-                      Icons.add_circle,
-                      color: Colors.green,
-                      size: 36,
-                    ),
-                    onPressed: null),
-                Text(
-                  '1',
-                  style: MyStyle().mainh1Title,
-                ),
-                IconButton(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  IconButton(
+                      icon: Icon(
+                        Icons.add_circle,
+                        color: Colors.green,
+                        size: 36,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          amount++;
+                        });
+                      }),
+                  Text(
+                    amount.toString(),
+                    style: MyStyle().mainh1Title,
+                  ),
+                  IconButton(
                     icon: Icon(
                       Icons.remove_circle,
                       color: Colors.red,
                       size: 36,
                     ),
-                    onPressed: null),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Container(
-                  width: 120,
-                  child: RaisedButton(
-                    onPressed: () {},
-                    child: Text('สั่งซื้อ'),
+                    onPressed: () {
+                      if (amount > 1) {
+                        setState(() {
+                          amount--;
+                        });
+                      }
+                    },
                   ),
-                ),
-                Container(
-                  width: 120,
-                  child: RaisedButton(
-                    onPressed: () {},
-                    child: Text('ยกเลิก'),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    width: 110,
+                    child: RaisedButton(
+                      color: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        print(
+                            'Order ${gasModels[index].gas_size_id} = $amount');
+
+                        addOrderToCart();
+                      },
+                      child: Text(
+                        'ใส่ตะกร้า',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  Container(
+                    width: 110,
+                    child: RaisedButton(
+                      color: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        'ยกเลิก',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  void addOrderToCart() {}
 }
