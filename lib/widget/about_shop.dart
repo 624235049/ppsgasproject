@@ -12,7 +12,7 @@ import 'package:ppsgasproject/utility/my_api.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:dio/dio.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
-import 'package:ppsgasproject/widget/detail_shop.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutShop extends StatefulWidget {
@@ -41,23 +41,8 @@ class _AboutShopState extends State<AboutShop> {
     findLatLng();
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-
-  Future<Position> getLocation() async {
-    try {
-      userlocation = await Geolocator.getCurrentPosition(
-        forceAndroidLocationManager: true,
-      );
-      return userlocation;
-    } catch (e) {
-      userlocation = null;
-    }
-  }
-
   Future<Null> findLatLng() async {
-    Position position = await getLocation();
+    Position position = await MyAPI().getLocation();
     setState(() {
       lat1 = position.latitude;
       lng1 = position.longitude;
@@ -75,14 +60,31 @@ class _AboutShopState extends State<AboutShop> {
     });
   }
 
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
-    try {
-      return await location.getLocation();
-    } catch (e) {
-      location = null;
-    }
+  Future<Null> readDataShop() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id');
+    String url = '${MyConstant().domain}/gas/getdetailShop.php';
+    await Dio().get(url).then((value) {
+      // print('value = $value');
+      var result = json.decode(value.data);
+      // print('result = $result');
+      for (var map in result) {
+        setState(() {
+          detailShopModel = DetailShopModel.fromJson(map);
+        });
+        // print('nameShop = ${detailShopModel.nameShop}');
+      }
+    });
   }
+
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
+  //   try {
+  //     return await location.getLocation();
+  //   } catch (e) {
+  //     location = null;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,23 +103,6 @@ class _AboutShopState extends State<AboutShop> {
 
   Widget showNoData(BuildContext context) =>
       MyStyle().titleCenter(context, 'ยังไม่มีข้อมูล');
-
-  Future<Null> readDataShop() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String id = preferences.getString('id');
-    String url = '${MyConstant().domain}/gas/getdetailShop.php';
-    await Dio().get(url).then((value) {
-      // print('value = $value');
-      var result = json.decode(value.data);
-      // print('result = $result');
-      for (var map in result) {
-        setState(() {
-          detailShopModel = DetailShopModel.fromJson(map);
-        });
-        // print('nameShop = ${detailShopModel.nameShop}');
-      }
-    });
-  }
 
   Widget showList() => Column(
         children: <Widget>[
@@ -194,14 +179,14 @@ class _AboutShopState extends State<AboutShop> {
     );
   }
 
-  Container showImage() {
-    return Container(
-      width: 200.0,
-      height: 200.0,
-      child: Image.network(
-        '${MyConstant().domain}${detailShopModel.urlPicture}',
-        fit: BoxFit.cover,
-      ),
-    );
-  }
+  // Container showImage() {
+  //   return Container(
+  //     width: 200.0,
+  //     height: 200.0,
+  //     child: Image.network(
+  //       '${MyConstant().domain}${detailShopModel.urlPicture}',
+  //       fit: BoxFit.cover,
+  //     ),
+  //   );
+  // }
 }

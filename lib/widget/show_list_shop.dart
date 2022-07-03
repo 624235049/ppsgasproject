@@ -26,7 +26,6 @@ class _ShowListShopState extends State<ShowListShop> {
 
   Future<Null> readBrand() async {
     String url = '${MyConstant().domain}/gas/gasbrand.php';
-
     await Dio().get(url).then((value) {
       // print('value ==> $value');
       var result = json.decode(value.data);
@@ -90,4 +89,6 @@ class _ShowListShopState extends State<ShowListShop> {
             children: brandimageCards,
           );
   }
+
+  
 }

@@ -8,6 +8,7 @@ import 'package:ppsgasproject/screen/historypage.dart';
 import 'package:ppsgasproject/screen/home.dart';
 import 'package:ppsgasproject/screen/notification.dart';
 import 'package:ppsgasproject/screen/profilepage.dart';
+import 'package:ppsgasproject/screen/show_shop_cart.dart';
 import 'package:ppsgasproject/screen/show_shop_gasmenu.dart';
 import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
@@ -58,31 +59,36 @@ class _MainUserState extends State<MainUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text(
-          nameUser == null ? 'Main User' : 'สวัสดีคุณ < $nameUser >',
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app,
-              color: Colors.white,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.red,
+            title: Text(
+              nameUser == null ? 'Main User' : 'สวัสดีคุณ < $nameUser >',
+              style: TextStyle(color: Colors.white),
             ),
-            onPressed: () => signOutProcess(context),
-          )
-        ],
-      ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                ),
+                onPressed: () => signOutProcess(context),
+              )
+            ],
+          ),
 
-      // drawer: showDrawer(),
-      body: pages[index],
-      backgroundColor: Color(0xfff1f1f5),
-      bottomNavigationBar: TabbarMaterialWidget(
-        index: index,
-        onChangedTab: onChangedTab,
-      ),
+          // drawer: showDrawer(),
+          body: pages[index],
+          backgroundColor: Color(0xfff1f1f5),
+          bottomNavigationBar: TabbarMaterialWidget(
+            index: index,
+            onChangedTab: onChangedTab,
+          ),
+        ),
+        shoppingCartbutton(),
+      ],
     );
   }
 
@@ -106,5 +112,30 @@ class _MainUserState extends State<MainUser> {
         currentAccountPicture: MyStyle().showLogo(),
         accountName: Text('Name Login'),
         accountEmail: Text(' Login!'));
+  }
+
+  Widget shoppingCartbutton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(right: 20.0, bottom: 50.0),
+              child: FloatingActionButton(
+                child: Icon(Icons.shopping_cart),
+                onPressed: () {
+                  MaterialPageRoute route = MaterialPageRoute(
+                    builder: (context) => ShowCart(),
+                  );
+                  Navigator.push(context, route);
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }

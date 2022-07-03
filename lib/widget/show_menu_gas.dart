@@ -5,17 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:ppsgasproject/model/cart_model.dart';
 import 'package:ppsgasproject/model/detailshop_model.dart';
 import 'package:ppsgasproject/model/gas_brand_model.dart';
 import 'package:ppsgasproject/model/gas_model.dart';
 import 'package:ppsgasproject/model/gas_size_model.dart';
+import 'package:ppsgasproject/utility/dialog.dart';
 import 'package:ppsgasproject/utility/my_api.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
-import 'package:ppsgasproject/widget/about_shop.dart';
-import 'package:ppsgasproject/widget/detail_shop.dart';
+
+import 'package:location/location.dart';
+import 'package:ppsgasproject/utility/sqlite_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ppsgasproject/widget/gas_brand.dart';
+import 'package:toast/toast.dart';
 
 class ShowMenuOderGas extends StatefulWidget {
   final GasBrandModel gasBrandModel;
@@ -28,28 +31,29 @@ class ShowMenuOderGas extends StatefulWidget {
 class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
   GasBrandModel gasBrandModel;
   GasSizeModel gasSizeModel;
-  String gas_brand_id, gas_size_id;
+  double lat1, lng1, lat2, lng2;
+  String gas_brand_id, gas_size_id, distanceString;
   List<GasModel> gasModels = List();
   List<GasSizeModel> gassizemodel = List();
-  DetailShopModel detailShopModels;
+  DetailShopModel detailShopModel;
+  Location location = Location();
 
   int amount = 1;
-  double lat1, lng1, lat2, lng2;
-  Location location = Location();
-  Position userlocation;
+  //
+  // Location location = Location();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     gasBrandModel = widget.gasBrandModel;
-
-    readGasOrderMenu();
-    findLocation();
     readDataShop();
+    findLocation();
+    readGasOrderMenu();
   }
 
   // Future<Null> findLocation() async {
-  //   location.onLocationChanged.listen((event) {
+  //   Location.instance.onLocationChanged.listen((event) {
   //     lat1 = event.latitude;
   //     lng1 = event.longitude;
   //     print(' lat1 = $lat1 lng1 = $lng1');
@@ -66,30 +70,18 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
       // print('result = $result');
       for (var map in result) {
         setState(() {
-          detailShopModels = DetailShopModel.fromJson(map);
+          detailShopModel = DetailShopModel.fromJson(map);
         });
         // print('nameShop = ${detailShopModel.nameShop}');
       }
     });
   }
 
-  Future<Position> getLocation() async {
-    try {
-      userlocation = await Geolocator.getCurrentPosition(
-        forceAndroidLocationManager: true,
-      );
-      return userlocation;
-    } catch (e) {
-      userlocation = null;
-    }
-  }
-
   Future<Null> findLocation() async {
-    Position position = await getLocation();
-    setState(() {
-      lat1 = position.latitude;
-      lng1 = position.longitude;
-    });
+    Position position = await MyAPI().getLocation();
+    lat1 = position.latitude;
+    lng1 = position.longitude;
+    print('lat1 == $lat1 , lng1 === $lng1');
   }
 
   Future<Null> readGasOrderMenu() async {
@@ -291,18 +283,61 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
 
     int priceInt = int.parse(price);
     int sumInt = priceInt * amount;
-
-    lat2 = double.parse(detailShopModels.lat);
-    lng2 = double.parse(detailShopModels.lng);
-    double distance = MyAPI().calculateDistance(lat1, lng1, lat2, lng2);
+    lat2 = double.parse(detailShopModel.lat);
+    lng2 = double.parse(detailShopModel.lng);
+    double distance = MyAPI().calculate2Distance(lat1, lng1, lat2, lng2);
 
     var myFormat = NumberFormat('##0.0#', 'en_US');
-    String distanceString = myFormat.format(distance);
+    distanceString = myFormat.format(distance);
 
     int transport = MyAPI().calculateTransport(distance);
 
     print(
-      'gas_id == $gas_id, gas_brand_id == $gas_brand_id, gas_brand_name $gas_brand_name gas_size_id == $gas_size_id price == $price amount == $amount, sum == $sumInt, distance == $distanceString, Transpot == $transport',
+      'gas_id == $gas_id, gas_brand_id == $gas_brand_id, gas_brand_name $gas_brand_name gas_size_id == $gas_size_id price == $price amount == $amount, sum == $sumInt, distance == $distanceString, transport == $transport ',
+    );
+
+    Map<String, dynamic> map = Map();
+    map['gas_id'] = gas_id;
+    map['gas_brand_id'] = gas_brand_id;
+    map['gas_brand_name'] = gas_brand_name;
+    map['gas_size_id'] = gas_size_id;
+    map['price'] = price;
+    map['amount'] = amount.toString();
+    map['sum'] = sumInt.toString();
+    map['distance'] = distanceString;
+    map['transport'] = transport.toString();
+
+    print('map ==> ${map.toString()}');
+    CartModel cartModel = CartModel.fromJson(map);
+
+    var object = await SQLiteHelper().readAllDataFormSQLite();
+    print('object lenght == ${object.length}');
+
+    if (object.length == 0) {
+      await SQLiteHelper().insertDataToSQLite(cartModel).then((value) => {
+            print('insert Sucess'),
+            showToast('Insert Sucess'),
+          });
+    } else {
+      String id_brandSQLite = object[0].gas_brand_id;
+      print('id_brandSQLite ==> $id_brandSQLite');
+      if (gas_brand_id == id_brandSQLite) {
+        await SQLiteHelper().insertDataToSQLite(cartModel).then((value) => {
+              print('insert Sucess'),
+              showToast('Insert Sucess'),
+            });
+      } else {
+        normalDialog(context,
+            'มีการทำรายการสั่งซื้อแก๊สยี่ห้อ ${object[0].gas_brand_name}อยู่กรุณาทำรายการก่อนหน้าเสร็จก่อน');
+      }
+    }
+  }
+
+  void showToast(String string) {
+    Toast.show(
+      string,
+      context,
+      duration: Toast.LENGTH_LONG,
     );
   }
 }

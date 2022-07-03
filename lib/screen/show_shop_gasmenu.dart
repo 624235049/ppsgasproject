@@ -72,6 +72,7 @@ class _ShowShopGasMenuState extends State<ShowShopGasMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[MyStyle().iconShowCart(context)],
         title: Text('สั่งซื้อ รายการ ${gasBrandModel.gas_brand_name}'),
       ),
       body: pages.length == 0 ? MyStyle().showProgress() : pages[indexPage],
