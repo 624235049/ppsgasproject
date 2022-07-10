@@ -100,25 +100,25 @@ class _AddGasMenuState extends State<AddGasMenu> {
         hint: Text('เลือกขนาดแก๊ส'),
         items: [
           DropdownMenuItem<String>(
-            value: '1',
+            value: '7',
             child: Center(
               child: Text("S"),
             ),
           ),
           DropdownMenuItem<String>(
-            value: '2',
+            value: '15',
             child: Center(
               child: Text("M"),
             ),
           ),
           DropdownMenuItem<String>(
-            value: '3',
+            value: '24',
             child: Center(
               child: Text("L"),
             ),
           ),
           DropdownMenuItem<String>(
-            value: '4',
+            value: '48',
             child: Center(
               child: Text("XL"),
             ),

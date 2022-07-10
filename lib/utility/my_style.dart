@@ -78,6 +78,11 @@ class MyStyle {
     color: Colors.black,
   );
 
+  Text showHeadTitle(String title) => Text(
+        title,
+        style: TextStyle(
+            fontSize: 24.0, color: Colors.black, fontWeight: FontWeight.bold),
+      );
   Text showTitle(String title) => Text(
         title,
         style: TextStyle(

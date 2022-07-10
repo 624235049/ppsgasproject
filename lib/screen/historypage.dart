@@ -1,4 +1,11 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ppsgasproject/model/order_model.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
+import 'package:ppsgasproject/utility/my_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class History extends StatefulWidget {
   @override
@@ -6,15 +13,196 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
+  String user_id;
+  bool statusOrder = true;
+  List<OrderModel> orderModels = List();
+  List<List<String>> listmenuGas = List();
+  List<List<String>> listPrices = List();
+  List<List<String>> listAmounts = List();
+  List<List<String>> listSums = List();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    finduser();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          'History Screen',
-          style: TextStyle(fontSize: 40),
+    return statusOrder ? buildNoneOrder() : buildcontent();
+  }
+
+  Widget buildcontent() => ListView.builder(
+        padding: EdgeInsets.all(20),
+        itemCount: orderModels.length,
+        itemBuilder: (context, index) => Column(
+          children: [
+            buildheadtitle(),
+            buildDatetimeOrder(index),
+            buildtransport(index),
+            builddistance(index),
+            buildListviewMenuGas(index),
+          ],
         ),
+      );
+
+  ListView buildListviewMenuGas(int index) => ListView.builder(
+        shrinkWrap: true,
+        physics: ScrollPhysics(),
+        itemCount: listmenuGas[index].length,
+        itemBuilder: (context, index2) => Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(listmenuGas[index][index2]),
+            ),
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(listAmounts[index][index2]),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(listPrices[index][index2]),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(listSums[index][index2]),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Container buildheadtitle() {
+    return Container(
+      padding: EdgeInsets.only(left: 8.0),
+      decoration: BoxDecoration(color: Colors.grey.shade300),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: MyStyle().showTitleH2('รายการแก๊ส'),
+          ),
+          Expanded(
+            flex: 1,
+            child: MyStyle().showTitleH2('จำนวน'),
+          ),
+          Expanded(
+            flex: 1,
+            child: MyStyle().showTitleH2('ราคา'),
+          ),
+          Expanded(
+            flex: 1,
+            child: MyStyle().showTitleH2('รวม'),
+          )
+        ],
       ),
     );
+  }
+
+  Text buildamount(int index) =>
+      MyStyle().showTitleH3('จำนวน ${orderModels[index].amount} ถัง');
+
+  Text builddistance(int index) {
+    return MyStyle()
+        .showTitleH3('ระยะทาง ${orderModels[index].distance} กิโลเมตร');
+  }
+
+  Row buildtransport(int index) {
+    return Row(
+      children: [
+        MyStyle().showTitleH3('ค่าจัดส่ง ${orderModels[index].transport} บาท'),
+      ],
+    );
+  }
+
+  Row buildDatetimeOrder(int index) {
+    return Row(
+      children: [
+        MyStyle().showTitleH3(
+            'วันเวลาที่สั่งซื้อ ${orderModels[index].orderDateTime}'),
+      ],
+    );
+  }
+
+  Row buildNameShop(int index) {
+    return Row(
+      children: [
+        MyStyle().showTitleH3('ยี่ห้อ ${orderModels[index].gas_brand_name}'),
+      ],
+    );
+  }
+
+  Center buildNoneOrder() {
+    return Center(
+      child: Text(
+        'ยังไม่มีข้อมูลการสั่งแก๊ส',
+        style: TextStyle(fontSize: 28),
+      ),
+    );
+  }
+
+  Future<Null> finduser() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    user_id = preferences.getString('id');
+    // print('user_id ==> $user_id');
+    readOrderFromuserid();
+  }
+
+  Future<Null> readOrderFromuserid() async {
+    if (user_id != null) {
+      String url =
+          '${MyConstant().domain}/gas/getOrderWhereuser_id.php?isAdd=true&user_id=$user_id';
+
+      Response response = await Dio().get(url);
+      // print('response ==> $response');
+      if (response.toString() != 'null') {
+        var result = jsonDecode(response.data);
+        for (var map in result) {
+          OrderModel model = OrderModel.fromJson(map);
+          List<String> menuGas = changeArrey(model.gas_brand_name);
+          List<String> prices = changeArrey(model.price);
+          List<String> amounts = changeArrey(model.amount);
+          List<String> sums = changeArrey(model.sum);
+          // print('menuGas ==> $menuGas');
+          setState(() {
+            statusOrder = false;
+            orderModels.add(model);
+            listmenuGas.add(menuGas);
+            listPrices.add(prices);
+            listAmounts.add(amounts);
+            listSums.add(sums);
+          });
+        }
+      }
+    }
+  }
+
+  List<String> changeArrey(String string) {
+    List<String> list = List();
+    String myString = string.substring(1, string.length - 1);
+    print('myString = $myString');
+    list = myString.split(',');
+    int index = 0;
+    for (var string in list) {
+      list[index] = string.trim();
+      index++;
+    }
+    return list;
   }
 }

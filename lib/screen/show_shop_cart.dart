@@ -1,9 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ppsgasproject/model/cart_model.dart';
+import 'package:ppsgasproject/utility/dialog.dart';
+import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:ppsgasproject/utility/sqlite_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:toast/toast.dart';
 
 class ShowCart extends StatefulWidget {
   @override
@@ -350,10 +355,38 @@ class _ShowCartState extends State<ShowCart> {
     String price = prices.toString();
     String amount = amounts.toString();
     String sum = sums.toString();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String user_id = preferences.getString('id');
+    String user_name = preferences.getString('Name');
+
     print(
-        'orderDateTime == $order_date_time , distance ==> $distance, transport ==> $transport');
+        'orderDateTime == $order_date_time ,user_id ==> $user_id,user_name ==> $user_name , distance ==> $distance, transport ==> $transport');
     print(
         'gas_id ==> $gas_id , gas_brand_id ==> $gas_brand_id, gas_size_id ==> $gas_size_id, gas_brand_name ==> $gas_brand_name, price ==> $price , amount ==> $amount , sum ==> $sum');
+
+    String url =
+        '${MyConstant().domain}/gas/addOrder.php?isAdd=true&order_date_time=$order_date_time&user_id=$user_id&user_name=$user_name&gas_id=$gas_id&gas_brand_id=$gas_brand_id&gas_size_id=$gas_size_id&distance=$distance&transport=$transport&gas_brand_name=$gas_brand_name&price=$price&amount=$amount&sum=$sum&rider_id=none&status=userorder';
+
+    await Dio().get(url).then((value) {
+      if (value.toString() == 'true') {
+        clearOrderSQLite();
+      } else {
+        normalDialog(context, 'ไม่สามารถสั่งซื้อได้กรุณาลองใหม่');
+      }
+    });
+  }
+
+  Future<Null> clearOrderSQLite() async {
+    await SQLiteHelper().deleteAllData().then(
+      (value) {
+        Toast.show(
+          'สั่งซื้อเรียบร้อยแล้วครับ',
+          context,
+          duration: Toast.LENGTH_LONG,
+        );
+        readSQLite();
+      },
+    );
   }
 }
 
