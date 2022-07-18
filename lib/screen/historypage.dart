@@ -6,6 +6,7 @@ import 'package:ppsgasproject/model/order_model.dart';
 import 'package:ppsgasproject/utility/my_constant.dart';
 import 'package:ppsgasproject/utility/my_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:steps_indicator/steps_indicator.dart';
 
 class History extends StatefulWidget {
   @override
@@ -20,6 +21,8 @@ class _HistoryState extends State<History> {
   List<List<String>> listPrices = List();
   List<List<String>> listAmounts = List();
   List<List<String>> listSums = List();
+  List<int> totalInts = List();
+  List<int> statusInts = List();
 
   @override
   void initState() {
@@ -38,13 +41,59 @@ class _HistoryState extends State<History> {
         itemCount: orderModels.length,
         itemBuilder: (context, index) => Column(
           children: [
+            MyStyle().mySizebox(),
             buildheadtitle(),
             buildDatetimeOrder(index),
             buildtransport(index),
             builddistance(index),
             buildListviewMenuGas(index),
+            buildTotal(index),
+            buildStepIndecator(statusInts[index]),
+            MyStyle().mySizebox(),
           ],
         ),
+      );
+
+  Widget buildStepIndecator(int index) => Column(
+        children: [
+          StepsIndicator(
+            lineLength: 80,
+            selectedStep: index,
+            nbSteps: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('สั่งซื้อ'),
+              Text('กำลังเตรียมแก๊ส'),
+              Text('กำลังจัดส่ง'),
+              Text('รายการสำเร็จ'),
+            ],
+          ),
+        ],
+      );
+
+  Widget buildTotal(int index) => Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                MyStyle().showTitleH3('รวมราคารายการแก๊ส :'),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyStyle().showTitleHC(totalInts[index].toString()),
+              ],
+            ),
+          ),
+        ],
       );
 
   ListView buildListviewMenuGas(int index) => ListView.builder(
@@ -179,7 +228,30 @@ class _HistoryState extends State<History> {
           List<String> prices = changeArrey(model.price);
           List<String> amounts = changeArrey(model.amount);
           List<String> sums = changeArrey(model.sum);
+
+          int status = 0;
+          switch (model.status) {
+            case 'userorder':
+              status = 0;
+              break;
+            case 'shopprocess':
+              status = 1;
+              break;
+            case 'RiderHandle':
+              status = 2;
+              break;
+            case 'Finish':
+              status = 3;
+              break;
+            default:
+          }
           // print('menuGas ==> $menuGas');
+          int total = 0;
+          for (var string in sums) {
+            total = total + int.parse(string.trim());
+          }
+          print('total = $total');
+
           setState(() {
             statusOrder = false;
             orderModels.add(model);
@@ -187,6 +259,8 @@ class _HistoryState extends State<History> {
             listPrices.add(prices);
             listAmounts.add(amounts);
             listSums.add(sums);
+            totalInts.add(total);
+            statusInts.add(status);
           });
         }
       }

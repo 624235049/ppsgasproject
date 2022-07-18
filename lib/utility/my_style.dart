@@ -102,7 +102,7 @@ class MyStyle {
   Text showTitleHC(String title) => Text(
         title,
         style: TextStyle(
-            fontSize: 20.0, color: Colors.red, fontWeight: FontWeight.bold),
+            fontSize: 18.0, color: Colors.red, fontWeight: FontWeight.bold),
       );
 
   Text showTitleH3(String title) => Text(
