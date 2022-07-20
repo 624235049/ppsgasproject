@@ -48,9 +48,7 @@ class MyAPI {
       userlocation = await Geolocator.getCurrentPosition(
           forceAndroidLocationManager: true);
       return userlocation;
-    } catch (e) {
-      return userlocation;
-    }
+    } catch (e) {}
   }
 
   MyAPI();

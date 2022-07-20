@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/screen/main_shop.dart';
 import 'package:ppsgasproject/screen/main_user.dart';
@@ -19,12 +20,19 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     checkPreference();
+    getToken();
+  }
+
+  Future<void> getToken() async {
+    String token = await FirebaseMessaging.instance.getToken();
+    print(token);
   }
 
   Future<Null> checkPreference() async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String chooseType = preferences.getString('ChooseType');
+
       if (chooseType != null && chooseType.isNotEmpty) {
         if (chooseType == 'Customer') {
           routetoService(MainUser());

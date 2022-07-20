@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ppsgasproject/model/gas_brand_model.dart';
@@ -48,7 +49,9 @@ class _MainUserState extends State<MainUser> {
     super.initState();
     findUser();
     currentWidget = ShowListShop();
+   
   }
+  
 
   Future<Null> findUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

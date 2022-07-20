@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ppsgasproject/screen/historypage.dart';
 import 'package:ppsgasproject/screen/home.dart';
@@ -6,8 +7,10 @@ import 'package:ppsgasproject/screen/profilepage.dart';
 import 'package:ppsgasproject/screen/splash_screen.dart';
 import 'package:ppsgasproject/screen/notification.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(HomePage());
 }
 
 class MyApp extends StatelessWidget {

@@ -52,13 +52,12 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
     readGasOrderMenu();
   }
 
-  // Future<Null> findLocation() async {
-  //   Location.instance.onLocationChanged.listen((event) {
-  //     lat1 = event.latitude;
-  //     lng1 = event.longitude;
-  //     print(' lat1 = $lat1 lng1 = $lng1');
-  //   });
-  // }
+  Future<Null> findLocation() async {
+    var currentLocation = await Location.instance.getLocation();
+    lat1 = currentLocation.latitude;
+    lng1 = currentLocation.longitude;
+    print('lat1 ==> $lat1 , lat2 ==> $lng1');
+  }
 
   Future<Null> readDataShop() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -77,12 +76,12 @@ class _ShowMenuOderGasState extends State<ShowMenuOderGas> {
     });
   }
 
-  Future<Null> findLocation() async {
-    Position position = await MyAPI().getLocation();
-    lat1 = position.latitude;
-    lng1 = position.longitude;
-    print('lat1 == $lat1 , lng1 === $lng1');
-  }
+  // Future<Null> findLocation() async {
+  //   Position position = await MyAPI().getLocation();
+  //   lat1 = position.latitude;
+  //   lng1 = position.longitude;
+  //   print('lat1 == $lat1 , lng1 === $lng1');
+  // }
 
   Future<Null> readGasOrderMenu() async {
     setState(() {

@@ -6,7 +6,8 @@ Future<void> normalDialog(BuildContext context, String message) async {
     builder: (context) => SimpleDialog(
       title: Text(message),
       children: <Widget>[
-        Row(mainAxisAlignment: MainAxisAlignment.end,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             FlatButton(
                 onPressed: () => Navigator.pop(context),
